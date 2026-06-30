@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "seniorbot"
+version = "0.1.0"
+description = "Keyboard-first automation toolkit for Senior ERP running through Microsoft RemoteApp."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "SeniorBot contributors" }
+]
+license = { text = "MIT" }
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: Microsoft :: Windows",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Office/Business",
+  "Topic :: Software Development :: Libraries",
+]
+
+[project.optional-dependencies]
+windows = [
+  "pywinauto>=0.6.8",
+]
+build = [
+  "pyinstaller>=6",
+]
+dev = []
+
+[project.scripts]
+seniorbot = "seniorbot.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["seniorbot*"]
