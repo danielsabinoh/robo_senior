@@ -3,14 +3,23 @@
 from __future__ import annotations
 
 import logging
+import sys
 from datetime import datetime
 from pathlib import Path
 
 
-def default_log_dir() -> Path:
-    """Return the default log directory for the current working tree/app."""
+def project_root() -> Path:
+    """Return the stable folder used for local logs and run outputs."""
 
-    return Path.cwd() / "logs"
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+    return Path(__file__).resolve().parents[1]
+
+
+def default_log_dir() -> Path:
+    """Return the default log directory for the project/app folder."""
+
+    return project_root() / "logs"
 
 
 def configure_run_logging(

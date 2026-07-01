@@ -5,8 +5,10 @@ from __future__ import annotations
 import argparse
 import logging
 import re
+import shutil
 import sys
 import time
+from datetime import date, datetime
 from pathlib import Path
 
 from seniorbot import F141CISFilters, F141CISScreen, SeniorBot, SeniorBotConfig
@@ -35,8 +37,24 @@ def build_parser() -> argparse.ArgumentParser:
     )
     f141cis.add_argument(
         "--output",
-        default=r"C:\Temp\f141cis.xlsx",
-        help="Local output path, or a RemoteApp-visible path.",
+        default=None,
+        help=(
+            "Local output path, or a RemoteApp-visible path. "
+            "When omitted, uses the monthly F141CIS folder."
+        ),
+    )
+    f141cis.add_argument(
+        "--base-dir",
+        default=None,
+        help=(
+            "Base folder for automatic F141CIS exports. "
+            "Default: C:\\exportacoes."
+        ),
+    )
+    f141cis.add_argument(
+        "--date",
+        default=None,
+        help="Export date in YYYY-MM-DD, DD/MM/YYYY, or DD.MM.YYYY format.",
     )
     f141cis.add_argument(
         "--delay",
@@ -85,6 +103,89 @@ def output_paths(output: str) -> tuple[Path, Path | None]:
     return Path(output), None
 
 
+def parse_export_date(value: str | None) -> date:
+    """Parse the requested export date, defaulting to today."""
+
+    if value is None:
+        return date.today()
+
+    normalized = value.strip()
+    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d.%m.%Y"):
+        try:
+            return datetime.strptime(normalized, fmt).date()
+        except ValueError:
+            pass
+
+    raise ValueError("Data invalida. Use YYYY-MM-DD, DD/MM/YYYY ou DD.MM.YYYY.")
+
+
+def default_f141cis_base_dir() -> Path:
+    """Return the default base folder for daily F141CIS exports."""
+
+    return Path(r"C:\exportacoes")
+
+
+def f141cis_output_path(*, base_dir: str | Path | None, export_date: date) -> Path:
+    """Build the monthly F141CIS export path for a given date."""
+
+    root = Path(base_dir) if base_dir is not None else default_f141cis_base_dir()
+    month_folder = export_date.strftime("%m %Y")
+    file_name = export_date.strftime("%d.%m.xlsx")
+    return root / month_folder / file_name
+
+
+def resolve_f141cis_output(args: argparse.Namespace) -> Path:
+    """Resolve the explicit or automatic F141CIS output path."""
+
+    if args.output:
+        return Path(args.output)
+    export_date = parse_export_date(args.date)
+    return f141cis_output_path(base_dir=args.base_dir, export_date=export_date)
+
+
+def backup_existing_file(path: Path) -> Path | None:
+    """Move an existing export file to the monthly backup folder."""
+
+    if not path.exists():
+        return None
+    if not path.is_file():
+        raise ValueError(f"O destino existe, mas nao e um arquivo: {path}")
+
+    backup_dir = path.parent / "_backups"
+    backup_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    backup_path = backup_dir / f"{path.stem}.backup-{timestamp}{path.suffix}"
+    shutil.move(str(path), str(backup_path))
+    return backup_path
+
+
+def format_file_size(path: Path | None) -> str:
+    """Return a readable file size for export summaries."""
+
+    if path is None or not path.exists() or not path.is_file():
+        return "nao disponivel"
+
+    size = path.stat().st_size
+    if size < 1024:
+        return f"{size} B"
+    if size < 1024 * 1024:
+        return f"{size / 1024:.1f} KB"
+    return f"{size / (1024 * 1024):.1f} MB"
+
+
+def print_export_summary(path: Path, *, backup_path: Path | None) -> None:
+    """Print a concise post-export summary for manual and scheduled runs."""
+
+    finished_at = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    print("Resumo da exportacao")
+    print(f"Arquivo: {path.name}")
+    print(f"Pasta: {path.parent}")
+    print(f"Tamanho: {format_file_size(path)}")
+    print(f"Horario: {finished_at}")
+    if backup_path is not None:
+        print(f"Backup anterior: {backup_path}")
+
+
 def validate_f141cis_args(args: argparse.Namespace) -> F141CISFilters:
     """Validate and normalize F141CIS business filters from CLI arguments."""
 
@@ -110,12 +211,13 @@ def run_f141cis(args: argparse.Namespace) -> Path | None:
 
     logger = logging.getLogger("seniorbot")
     filters = validate_f141cis_args(args)
-    remote_path, local_path = output_paths(args.output)
+    output = resolve_f141cis_output(args)
+    remote_path, local_path = output_paths(str(output))
     logger.info(
         "Iniciando F141CIS: serie=%s cfops=%s output=%s remote_path=%s",
         filters.serie_nf,
         ",".join(filters.cfops),
-        args.output,
+        output,
         remote_path,
     )
 
@@ -123,6 +225,7 @@ def run_f141cis(args: argparse.Namespace) -> Path | None:
         print("Simulacao F141CIS")
         print(f"Serie NF: {filters.serie_nf}")
         print(f"CFOPs: {', '.join(filters.cfops)}")
+        print(f"Arquivo de saida: {output}")
         print(f"Caminho usado no RemoteApp: {remote_path}")
         if local_path is not None:
             print(f"Arquivo local aguardado: {local_path}")
@@ -140,6 +243,12 @@ def run_f141cis(args: argparse.Namespace) -> Path | None:
     if args.delay > 0:
         print(f"Iniciando em {args.delay} segundos...")
         time.sleep(args.delay)
+
+    if local_path is not None:
+        local_path.parent.mkdir(parents=True, exist_ok=True)
+    backup_path = backup_existing_file(local_path) if local_path is not None else None
+    if backup_path is not None:
+        logger.info("Arquivo existente movido para backup: %s", backup_path)
 
     bot = SeniorBot(
         SeniorBotConfig(
@@ -164,7 +273,9 @@ def run_f141cis(args: argparse.Namespace) -> Path | None:
         wait=not args.no_wait,
     )
     logger.info("F141CIS concluida com sucesso: %s", local_path or remote_path)
-    print(f"OK: arquivo exportado em {local_path or remote_path}")
+    summary_path = local_path or result or remote_path
+    print(f"OK: arquivo exportado em {summary_path}")
+    print_export_summary(Path(summary_path), backup_path=backup_path)
     return result
 
 

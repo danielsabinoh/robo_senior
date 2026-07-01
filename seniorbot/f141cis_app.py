@@ -18,8 +18,6 @@ DEFAULT_ARGS = [
     "6102",
     "5910",
     "6910",
-    "--output",
-    r"C:\Temp\f141cis.xlsx",
 ]
 
 

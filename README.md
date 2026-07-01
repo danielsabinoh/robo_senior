@@ -15,16 +15,54 @@ pip install -e ".[windows,dev]"
 Valide os parametros e os caminhos sem acionar o Senior:
 
 ```powershell
-seniorbot f141cis --dry-run --serie 036 --cfops 5101 5102 --output C:\Temp\f141cis.xlsx
+seniorbot f141cis --dry-run --serie 036 --cfops 5101 5102 --date 2026-07-01
 ```
 
 Execute a exportacao F141CIS:
 
 ```powershell
-seniorbot f141cis --yes --serie 036 --cfops 5101 5102 6101 6102 5910 6910 --output C:\Temp\f141cis.xlsx
+seniorbot f141cis --yes --serie 036 --cfops 5101 5102 6101 6102 5910 6910
 ```
 
-Quando o caminho de saida usa uma unidade local, como `C:\Temp\f141cis.xlsx`, o SeniorBot salva pelo caminho RemoteApp equivalente `\\tsclient\C\Temp\f141cis.xlsx` e aguarda o arquivo local ficar pronto.
+Quando `--output` nao e informado, o arquivo e salvo automaticamente na pasta mensal:
+
+```text
+C:\exportacoes\MM AAAA\DD.MM.xlsx
+```
+
+Exemplo para 1 de julho de 2026:
+
+```text
+C:\exportacoes\07 2026\01.07.xlsx
+```
+
+Para apontar a exportacao para a pasta consultada pela planilha mae, use `--base-dir`:
+
+```powershell
+seniorbot f141cis --yes --base-dir "C:\Controle de Faturamento"
+```
+
+Quando o caminho de saida usa uma unidade local, o SeniorBot salva pelo caminho RemoteApp equivalente `\\tsclient\...` e aguarda o arquivo local ficar pronto.
+
+Se o arquivo do dia ja existir, ele e movido antes para `_backups` dentro da pasta do mes. Exemplo:
+
+```text
+C:\exportacoes\07 2026\_backups\01.07.backup-20260701-170000.xlsx
+```
+
+Ao final, o SeniorBot mostra um resumo com arquivo, pasta, tamanho e horario.
+
+Os logs ficam em `logs\` dentro da pasta do projeto, a menos que `--log-dir` seja informado.
+
+## Agendamento
+
+Para criar ou atualizar a tarefa diaria das 17:00 no Agendador de Tarefas do Windows:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\install_f141cis_task.ps1
+```
+
+A tarefa usa `launchers\seniorbot-f141cis-scheduled.cmd`, que executa sem pausa e sem confirmacao manual. O Senior ainda precisa estar aberto na tela inicial para a automacao atual funcionar.
 
 ## Example
 
