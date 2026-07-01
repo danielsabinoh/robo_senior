@@ -67,6 +67,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Final F141CIS filter date in DD/MM/YYYY. Default: today.",
     )
     f141cis.add_argument(
+        "--use-today",
+        action="store_true",
+        help="Use today's date for F141CIS filters without prompting.",
+    )
+    f141cis.add_argument(
         "--delay",
         type=int,
         default=3,
@@ -262,12 +267,17 @@ def validate_f141cis_args(args: argparse.Namespace) -> F141CISFilters:
 def ask_f141cis_filter_dates(args: argparse.Namespace) -> None:
     """Prompt for screen date filters when running interactively."""
 
-    if args.yes or args.dry_run:
+    if args.dry_run or getattr(args, "use_today", False):
         return
     if args.start_date or args.end_date:
         return
+    if getattr(args, "date", None):
+        return
 
     default_filter_date = parse_export_date(getattr(args, "date", None))
+    print()
+    print("Informe as datas do filtro da F141CIS.")
+    print("Pressione ENTER para usar a data de hoje.")
     start_date = ask_screen_date("Data inicial", default=default_filter_date)
     end_date = ask_screen_date("Data final", default=default_filter_date)
     if end_date < start_date:

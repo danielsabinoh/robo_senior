@@ -178,7 +178,14 @@ class CliTests(unittest.TestCase):
             validate_f141cis_args(args)
 
     def test_ask_f141cis_filter_dates_uses_today_when_user_presses_enter(self) -> None:
-        args = Namespace(yes=False, dry_run=False, start_date=None, end_date=None)
+        args = Namespace(
+            yes=True,
+            dry_run=False,
+            use_today=False,
+            date=None,
+            start_date=None,
+            end_date=None,
+        )
 
         with patch("builtins.input", side_effect=["", ""]):
             ask_f141cis_filter_dates(args)
@@ -187,8 +194,31 @@ class CliTests(unittest.TestCase):
         self.assertEqual(args.start_date, today)
         self.assertEqual(args.end_date, today)
 
-    def test_ask_f141cis_filter_dates_skips_non_interactive_runs(self) -> None:
-        args = Namespace(yes=True, dry_run=False, start_date=None, end_date=None)
+    def test_ask_f141cis_filter_dates_skips_when_use_today_is_set(self) -> None:
+        args = Namespace(
+            yes=True,
+            dry_run=False,
+            use_today=True,
+            date=None,
+            start_date=None,
+            end_date=None,
+        )
+
+        with patch("builtins.input") as input_mock:
+            ask_f141cis_filter_dates(args)
+
+        input_mock.assert_not_called()
+        self.assertIsNone(args.start_date)
+
+    def test_ask_f141cis_filter_dates_skips_when_export_date_is_set(self) -> None:
+        args = Namespace(
+            yes=True,
+            dry_run=False,
+            use_today=False,
+            date="2026-07-02",
+            start_date=None,
+            end_date=None,
+        )
 
         with patch("builtins.input") as input_mock:
             ask_f141cis_filter_dates(args)
