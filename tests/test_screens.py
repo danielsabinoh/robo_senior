@@ -13,8 +13,14 @@ class FakeKeyboard:
     def write_text(self, text: str) -> None:
         self.events.append(text)
 
+    def ctrl_a(self) -> None:
+        self.events.append("ctrl_a")
+
     def repeat(self, keys: str, count: int) -> None:
         self.events.extend([keys] * count)
+
+    def tab(self) -> None:
+        self.events.append("{TAB}")
 
     def enter(self) -> None:
         self.events.append("{ENTER}")
@@ -40,6 +46,38 @@ class F141CISScreenTests(unittest.TestCase):
 
         self.assertEqual(filters.cfop_text, '"5101","5102"')
 
+    def test_prepare_grid_types_screen_date_range_before_series(self) -> None:
+        bot = FakeBot()
+        screen = F141CISScreen(
+            bot,  # type: ignore[arg-type]
+            filters=F141CISFilters(
+                data_inicial="01/07/2026",
+                data_final="02/07/2026",
+            ),
+        )
+
+        screen.fill_filters()
+
+        self.assertEqual(
+            bot.keyboard.events[:14],
+            [
+                "ctrl_a",
+                "01/07/2026",
+                "{TAB}",
+                "ctrl_a",
+                "02/07/2026",
+                "{TAB}",
+                "{TAB}",
+                "{TAB}",
+                "{TAB}",
+                "{TAB}",
+                "{TAB}",
+                "{TAB}",
+                "{TAB}",
+                "036",
+            ],
+        )
+
     def test_prepare_grid_uses_mapped_keyboard_route(self) -> None:
         bot = FakeBot()
         screen = F141CISScreen(bot)  # type: ignore[arg-type]
@@ -47,7 +85,9 @@ class F141CISScreenTests(unittest.TestCase):
         screen.prepare_grid()
 
         self.assertTrue(bot.focused)
-        self.assertEqual(bot.keyboard.events[0:4], ["{F11}", "F141CIS", "{ENTER}", "{TAB}"])
+        self.assertEqual(bot.keyboard.events[0:4], ["{F11}", "F141CIS", "{ENTER}", "ctrl_a"])
+        self.assertRegex(bot.keyboard.events[4], r"\d{2}/\d{2}/\d{4}")
+        self.assertEqual(bot.keyboard.events[5], "{TAB}")
         self.assertIn("036", bot.keyboard.events)
         self.assertIn('"5101","5102","6101","6102","5910","6910"', bot.keyboard.events)
         self.assertEqual(bot.keyboard.events.count("{UP}"), 2)

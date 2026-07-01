@@ -24,6 +24,16 @@ Execute a exportacao F141CIS:
 seniorbot f141cis --yes --serie 036 --cfops 5101 5102 6101 6102 5910 6910
 ```
 
+No uso manual, sem `--yes`, o SeniorBot pergunta a data inicial e final do filtro. Pressione ENTER para usar a data de hoje.
+
+Para informar as datas direto no comando:
+
+```powershell
+seniorbot f141cis --yes --start-date 01/07/2026 --end-date 01/07/2026
+```
+
+Quando `--date` e usado para reprocessar um dia, essa data tambem vira o padrao do filtro da tela, a menos que `--start-date` e `--end-date` sejam informados.
+
 Quando `--output` nao e informado, o arquivo e salvo automaticamente na pasta mensal:
 
 ```text

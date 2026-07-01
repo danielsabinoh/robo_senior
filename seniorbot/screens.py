@@ -3,16 +3,23 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from datetime import date
 from pathlib import Path
 
 from seniorbot.export import SeniorBot
+
+
+def _today_screen_date() -> str:
+    return date.today().strftime("%d/%m/%Y")
 
 
 @dataclass(frozen=True, slots=True)
 class F141CISFilters:
     """Filters used by the F141CIS consultation."""
 
+    data_inicial: str = field(default_factory=_today_screen_date)
+    data_final: str = field(default_factory=_today_screen_date)
     serie_nf: str = "036"
     cfops: tuple[str, ...] = ("5101", "5102", "6101", "6102", "5910", "6910")
 
@@ -57,7 +64,14 @@ class F141CISScreen:
 
         keyboard = self.bot.keyboard
 
-        keyboard.repeat("{TAB}", 9)
+        keyboard.ctrl_a()
+        keyboard.write_text(self.filters.data_inicial)
+
+        keyboard.tab()
+        keyboard.ctrl_a()
+        keyboard.write_text(self.filters.data_final)
+
+        keyboard.repeat("{TAB}", 8)
         keyboard.write_text(self.filters.serie_nf)
 
         keyboard.repeat("{TAB}", 11)

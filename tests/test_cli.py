@@ -6,14 +6,17 @@ from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from seniorbot.cli import (
+    ask_f141cis_filter_dates,
     backup_existing_file,
     build_parser,
     default_f141cis_base_dir,
     f141cis_output_path,
     format_file_size,
+    format_screen_date,
     main,
     output_paths,
     parse_export_date,
+    parse_screen_date,
     resolve_f141cis_output,
     validate_f141cis_args,
 )
@@ -36,6 +39,16 @@ class CliTests(unittest.TestCase):
         self.assertEqual(parse_export_date("2026-07-01"), date(2026, 7, 1))
         self.assertEqual(parse_export_date("01/07/2026"), date(2026, 7, 1))
         self.assertEqual(parse_export_date("01.07.2026"), date(2026, 7, 1))
+
+    def test_parse_screen_date_accepts_dd_mm_yyyy_or_default(self) -> None:
+        default = date(2026, 7, 1)
+
+        self.assertEqual(parse_screen_date(None, default=default), default)
+        self.assertEqual(parse_screen_date("", default=default), default)
+        self.assertEqual(parse_screen_date("02/07/2026", default=default), date(2026, 7, 2))
+
+    def test_format_screen_date_uses_senior_date_format(self) -> None:
+        self.assertEqual(format_screen_date(date(2026, 7, 1)), "01/07/2026")
 
     def test_f141cis_output_path_uses_month_folder_and_day_file(self) -> None:
         path = f141cis_output_path(
@@ -125,12 +138,63 @@ class CliTests(unittest.TestCase):
             validate_f141cis_args(args)
 
     def test_validate_f141cis_args_returns_normalized_filters(self) -> None:
-        args = Namespace(serie=" 036 ", cfops=[" 5101 ", "6102"])
+        args = Namespace(
+            serie=" 036 ",
+            cfops=[" 5101 ", "6102"],
+            start_date="01/07/2026",
+            end_date="02/07/2026",
+        )
 
         filters = validate_f141cis_args(args)
 
+        self.assertEqual(filters.data_inicial, "01/07/2026")
+        self.assertEqual(filters.data_final, "02/07/2026")
         self.assertEqual(filters.serie_nf, "036")
         self.assertEqual(filters.cfops, ("5101", "6102"))
+
+    def test_validate_f141cis_args_uses_export_date_as_default_filter_date(self) -> None:
+        args = Namespace(
+            serie="036",
+            cfops=["5101"],
+            date="02/07/2026",
+            start_date=None,
+            end_date=None,
+        )
+
+        filters = validate_f141cis_args(args)
+
+        self.assertEqual(filters.data_inicial, "02/07/2026")
+        self.assertEqual(filters.data_final, "02/07/2026")
+
+    def test_validate_f141cis_args_rejects_end_date_before_start_date(self) -> None:
+        args = Namespace(
+            serie="036",
+            cfops=["5101"],
+            start_date="02/07/2026",
+            end_date="01/07/2026",
+        )
+
+        with self.assertRaisesRegex(ValueError, "data final"):
+            validate_f141cis_args(args)
+
+    def test_ask_f141cis_filter_dates_uses_today_when_user_presses_enter(self) -> None:
+        args = Namespace(yes=False, dry_run=False, start_date=None, end_date=None)
+
+        with patch("builtins.input", side_effect=["", ""]):
+            ask_f141cis_filter_dates(args)
+
+        today = format_screen_date(date.today())
+        self.assertEqual(args.start_date, today)
+        self.assertEqual(args.end_date, today)
+
+    def test_ask_f141cis_filter_dates_skips_non_interactive_runs(self) -> None:
+        args = Namespace(yes=True, dry_run=False, start_date=None, end_date=None)
+
+        with patch("builtins.input") as input_mock:
+            ask_f141cis_filter_dates(args)
+
+        input_mock.assert_not_called()
+        self.assertIsNone(args.start_date)
 
     def test_main_dry_run_returns_zero_without_automation(self) -> None:
         with TemporaryDirectory() as directory:

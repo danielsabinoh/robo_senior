@@ -57,6 +57,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="Export date in YYYY-MM-DD, DD/MM/YYYY, or DD.MM.YYYY format.",
     )
     f141cis.add_argument(
+        "--start-date",
+        default=None,
+        help="Initial F141CIS filter date in DD/MM/YYYY. Default: today.",
+    )
+    f141cis.add_argument(
+        "--end-date",
+        default=None,
+        help="Final F141CIS filter date in DD/MM/YYYY. Default: today.",
+    )
+    f141cis.add_argument(
         "--delay",
         type=int,
         default=3,
@@ -117,6 +127,32 @@ def parse_export_date(value: str | None) -> date:
             pass
 
     raise ValueError("Data invalida. Use YYYY-MM-DD, DD/MM/YYYY ou DD.MM.YYYY.")
+
+
+def format_screen_date(value: date) -> str:
+    """Format a date exactly as typed in Senior date fields."""
+
+    return value.strftime("%d/%m/%Y")
+
+
+def parse_screen_date(value: str | None, *, default: date) -> date:
+    """Parse an optional Senior screen date in DD/MM/YYYY format."""
+
+    if value is None or not value.strip():
+        return default
+
+    try:
+        return datetime.strptime(value.strip(), "%d/%m/%Y").date()
+    except ValueError as exc:
+        raise ValueError("Data invalida. Use DD/MM/AAAA.") from exc
+
+
+def ask_screen_date(label: str, *, default: date) -> date:
+    """Ask the user for a F141CIS filter date, defaulting on Enter."""
+
+    default_text = format_screen_date(default)
+    value = input(f"{label} [{default_text}]: ")
+    return parse_screen_date(value, default=default)
 
 
 def default_f141cis_base_dir() -> Path:
@@ -203,18 +239,56 @@ def validate_f141cis_args(args: argparse.Namespace) -> F141CISFilters:
             "CFOP deve conter apenas numeros: " + ", ".join(invalid_cfops)
         )
 
-    return F141CISFilters(serie_nf=serie, cfops=cfops)
+    default_filter_date = parse_export_date(getattr(args, "date", None))
+    start_date = parse_screen_date(
+        getattr(args, "start_date", None),
+        default=default_filter_date,
+    )
+    end_date = parse_screen_date(
+        getattr(args, "end_date", None),
+        default=default_filter_date,
+    )
+    if end_date < start_date:
+        raise ValueError("A data final nao pode ser menor que a data inicial.")
+
+    return F141CISFilters(
+        data_inicial=format_screen_date(start_date),
+        data_final=format_screen_date(end_date),
+        serie_nf=serie,
+        cfops=cfops,
+    )
+
+
+def ask_f141cis_filter_dates(args: argparse.Namespace) -> None:
+    """Prompt for screen date filters when running interactively."""
+
+    if args.yes or args.dry_run:
+        return
+    if args.start_date or args.end_date:
+        return
+
+    default_filter_date = parse_export_date(getattr(args, "date", None))
+    start_date = ask_screen_date("Data inicial", default=default_filter_date)
+    end_date = ask_screen_date("Data final", default=default_filter_date)
+    if end_date < start_date:
+        raise ValueError("A data final nao pode ser menor que a data inicial.")
+
+    args.start_date = format_screen_date(start_date)
+    args.end_date = format_screen_date(end_date)
 
 
 def run_f141cis(args: argparse.Namespace) -> Path | None:
     """Run the F141CIS export command."""
 
     logger = logging.getLogger("seniorbot")
+    ask_f141cis_filter_dates(args)
     filters = validate_f141cis_args(args)
     output = resolve_f141cis_output(args)
     remote_path, local_path = output_paths(str(output))
     logger.info(
-        "Iniciando F141CIS: serie=%s cfops=%s output=%s remote_path=%s",
+        "Iniciando F141CIS: data_inicial=%s data_final=%s serie=%s cfops=%s output=%s remote_path=%s",
+        filters.data_inicial,
+        filters.data_final,
         filters.serie_nf,
         ",".join(filters.cfops),
         output,
@@ -223,6 +297,8 @@ def run_f141cis(args: argparse.Namespace) -> Path | None:
 
     if args.dry_run:
         print("Simulacao F141CIS")
+        print(f"Data inicial: {filters.data_inicial}")
+        print(f"Data final: {filters.data_final}")
         print(f"Serie NF: {filters.serie_nf}")
         print(f"CFOPs: {', '.join(filters.cfops)}")
         print(f"Arquivo de saida: {output}")
