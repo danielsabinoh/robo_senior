@@ -1,9 +1,10 @@
 import unittest
+from argparse import Namespace
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from seniorbot.cli import build_parser, main, output_paths
+from seniorbot.cli import build_parser, main, output_paths, validate_f141cis_args
 
 
 class CliTests(unittest.TestCase):
@@ -39,6 +40,40 @@ class CliTests(unittest.TestCase):
         self.assertEqual(args.serie, "036")
         self.assertEqual(args.cfops, ["5101", "5102"])
         self.assertEqual(args.output, r"C:\Temp\f141cis.xlsx")
+
+    def test_validate_f141cis_args_strips_and_rejects_invalid_cfops(self) -> None:
+        args = Namespace(serie=" 036 ", cfops=[" 5101 ", "ABC"])
+
+        with self.assertRaisesRegex(ValueError, "CFOP"):
+            validate_f141cis_args(args)
+
+    def test_validate_f141cis_args_returns_normalized_filters(self) -> None:
+        args = Namespace(serie=" 036 ", cfops=[" 5101 ", "6102"])
+
+        filters = validate_f141cis_args(args)
+
+        self.assertEqual(filters.serie_nf, "036")
+        self.assertEqual(filters.cfops, ("5101", "6102"))
+
+    def test_main_dry_run_returns_zero_without_automation(self) -> None:
+        with TemporaryDirectory() as directory:
+            exit_code = main(
+                [
+                    "f141cis",
+                    "--dry-run",
+                    "--serie",
+                    "036",
+                    "--cfops",
+                    "5101",
+                    "--output",
+                    r"C:\Temp\f141cis.xlsx",
+                    "--log-dir",
+                    directory,
+                ]
+            )
+
+            self.assertEqual(exit_code, 0)
+            self.assertEqual(len(list(Path(directory).glob("seniorbot-*.log"))), 1)
 
     def test_main_returns_error_and_writes_log_on_failure(self) -> None:
         with TemporaryDirectory() as directory:

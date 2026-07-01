@@ -65,6 +65,11 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Directory where execution logs are written.",
     )
+    f141cis.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate inputs and show the resolved save paths without automation.",
+    )
     return parser
 
 
@@ -80,18 +85,51 @@ def output_paths(output: str) -> tuple[Path, Path | None]:
     return Path(output), None
 
 
+def validate_f141cis_args(args: argparse.Namespace) -> F141CISFilters:
+    """Validate and normalize F141CIS business filters from CLI arguments."""
+
+    serie = args.serie.strip()
+    if not serie:
+        raise ValueError("A serie da NF nao pode ficar vazia.")
+
+    cfops = tuple(cfop.strip() for cfop in args.cfops if cfop.strip())
+    if not cfops:
+        raise ValueError("Informe pelo menos um CFOP.")
+
+    invalid_cfops = [cfop for cfop in cfops if not cfop.isdigit()]
+    if invalid_cfops:
+        raise ValueError(
+            "CFOP deve conter apenas numeros: " + ", ".join(invalid_cfops)
+        )
+
+    return F141CISFilters(serie_nf=serie, cfops=cfops)
+
+
 def run_f141cis(args: argparse.Namespace) -> Path | None:
     """Run the F141CIS export command."""
 
     logger = logging.getLogger("seniorbot")
+    filters = validate_f141cis_args(args)
     remote_path, local_path = output_paths(args.output)
     logger.info(
         "Iniciando F141CIS: serie=%s cfops=%s output=%s remote_path=%s",
-        args.serie,
-        ",".join(args.cfops),
+        filters.serie_nf,
+        ",".join(filters.cfops),
         args.output,
         remote_path,
     )
+
+    if args.dry_run:
+        print("Simulacao F141CIS")
+        print(f"Serie NF: {filters.serie_nf}")
+        print(f"CFOPs: {', '.join(filters.cfops)}")
+        print(f"Caminho usado no RemoteApp: {remote_path}")
+        if local_path is not None:
+            print(f"Arquivo local aguardado: {local_path}")
+        else:
+            print("Arquivo local aguardado: nao aplicavel")
+        logger.info("Simulacao F141CIS concluida")
+        return local_path or remote_path
 
     if not args.yes:
         print()
@@ -117,10 +155,7 @@ def run_f141cis(args: argparse.Namespace) -> Path | None:
     )
     screen = F141CISScreen(
         bot,
-        filters=F141CISFilters(
-            serie_nf=args.serie,
-            cfops=tuple(args.cfops),
-        ),
+        filters=filters,
     )
 
     result = screen.export_xlsx(
