@@ -326,6 +326,7 @@ def run_f141cis(args: argparse.Namespace) -> Path | None:
     if backup_path is not None:
         logger.info("Arquivo existente movido para backup: %s", backup_path)
 
+    print("Conectando ao controle de janelas do Windows...")
     bot = SeniorBot(
         SeniorBotConfig(
             context_menu_method="apps",
@@ -338,11 +339,13 @@ def run_f141cis(args: argparse.Namespace) -> Path | None:
             file_timeout=120,
         )
     )
+    print("Procurando e focando a janela do Senior...")
     screen = F141CISScreen(
         bot,
         filters=filters,
     )
 
+    print("Executando roteiro F141CIS e exportando a grade...")
     result = screen.export_xlsx(
         remote_path,
         wait_path=local_path,

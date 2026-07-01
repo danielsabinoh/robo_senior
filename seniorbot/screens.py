@@ -53,8 +53,11 @@ class F141CISScreen:
     def open_from_home(self) -> None:
         """Open F141CIS from Senior's initial screen using F11."""
 
+        print("Focando janela do Senior...")
         self.bot.focus_remoteapp()
+        print("Abrindo busca de tela com F11...")
         self.bot.keyboard.send_keys("{F11}")
+        print("Digitando codigo F141CIS...")
         self.bot.keyboard.write_text("F141CIS")
         self.bot.keyboard.enter()
         self.logger.info("Tela F141CIS solicitada")
@@ -62,6 +65,7 @@ class F141CISScreen:
     def fill_filters(self) -> None:
         """Fill the known F141CIS filters using the mapped keyboard route."""
 
+        print("Preenchendo filtros da F141CIS...")
         keyboard = self.bot.keyboard
 
         keyboard.ctrl_a()
@@ -88,6 +92,7 @@ class F141CISScreen:
     def show_data_and_focus_grid(self) -> None:
         """Show the data and move focus into the result grid."""
 
+        print("Exibindo dados e focando a grade...")
         keyboard = self.bot.keyboard
         keyboard.repeat("{TAB}", 45)
         keyboard.enter()

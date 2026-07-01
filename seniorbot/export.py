@@ -42,6 +42,7 @@ class SeniorBot:
     def focus_remoteapp(self) -> None:
         """Bring the Senior RemoteApp window to the foreground."""
 
+        self.logger.info("Procurando janela do Senior RemoteApp")
         self.windows.focus_remoteapp()
         self.logger.info("RemoteApp focado")
 

@@ -187,8 +187,7 @@ class WindowManager:
     def _class_name(window: Any) -> str:
         return str(window.class_name())
 
-    @staticmethod
-    def _create_desktop() -> Any:
+    def _create_desktop(self) -> Any:
         try:
             from pywinauto import Desktop
         except ImportError as exc:
@@ -196,4 +195,8 @@ class WindowManager:
                 "pywinauto is required for real Windows window discovery. "
                 'Install with: pip install "seniorbot[windows]"'
             ) from exc
-        return Desktop(backend="uia")
+        self._logger.info(
+            "Inicializando descoberta de janelas com backend %s",
+            self._config.windows_backend,
+        )
+        return Desktop(backend=self._config.windows_backend)

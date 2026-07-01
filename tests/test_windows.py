@@ -35,6 +35,9 @@ class FakeDesktop:
 
 
 class WindowManagerTests(unittest.TestCase):
+    def test_default_window_backend_uses_win32(self) -> None:
+        self.assertEqual(SeniorBotConfig().windows_backend, "win32")
+
     def test_focus_remoteapp_can_continue_when_active_handle_differs(self) -> None:
         remoteapp = FakeWindow(
             100,

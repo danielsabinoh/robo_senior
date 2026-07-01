@@ -7,6 +7,7 @@ from typing import Literal
 
 ContextMenuMethod = Literal["shift_f10", "apps"]
 SaveDialogMode = Literal["native", "remote_keyboard"]
+WindowsBackend = Literal["win32", "uia"]
 
 
 @dataclass(frozen=True, slots=True)
@@ -23,6 +24,7 @@ class SeniorBotConfig:
         r"Select your default local printer",
     )
     remoteapp_class_name: str = "RAIL_WINDOW"
+    windows_backend: WindowsBackend = "win32"
     save_dialog_title_pattern: str = r"^(Salvar como|Save As)$"
     overwrite_dialog_title_pattern: str = (
         r"^(Confirmar Salvar como|Confirm Save As|Confirmar substituição)$"
