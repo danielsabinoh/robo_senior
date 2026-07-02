@@ -40,6 +40,12 @@ Para rodar sem perguntar datas, como no agendamento, use:
 seniorbot f141cis --yes --use-today
 ```
 
+Para abrir a Area de Trabalho Remota, iniciar o Senior e depois executar a F141CIS:
+
+```powershell
+seniorbot f141cis --open-rdp --yes
+```
+
 Quando `--date` é usado para reprocessar um dia, essa data também vira o padrão do filtro da tela, a menos que `--start-date` e `--end-date` sejam informados.
 
 Quando `--output` não é informado, o arquivo é salvo automaticamente na pasta mensal:
@@ -71,6 +77,27 @@ C:\exportacoes\07 2026\_backups\01.07.backup-20260701-170000.xlsx
 Ao final, o SeniorBot mostra um resumo com arquivo, pasta, tamanho e horário.
 
 Os logs ficam em `logs\` dentro da pasta do projeto, a menos que `--log-dir` seja informado.
+
+## Credenciais locais
+
+As credenciais da Area de Trabalho Remota e do Senior nao ficam no codigo. Copie o exemplo:
+
+```powershell
+New-Item -ItemType Directory -Force .local
+Copy-Item remoteapp.env.example .local\remoteapp.env
+```
+
+Depois edite `.local\remoteapp.env` com os dados da sua maquina. Essa pasta e arquivos `.env` sao ignorados pelo Git.
+
+Variaveis esperadas:
+
+```text
+RDP_HOST=10.15.1.130
+RDP_PASSWORD=sua_senha_do_windows_remoto
+SENIOR_SHORTCUT_PATH=\\SRVAPP01\SapiensProducao\Sapiens\Gestão Empresarial (ERP).lnk
+SENIOR_USER=seu_usuario_do_senior
+SENIOR_PASSWORD=sua_senha_do_senior
+```
 
 ## Agendamento
 

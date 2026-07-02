@@ -12,7 +12,12 @@ from datetime import date, datetime
 from pathlib import Path
 
 from seniorbot import F141CISFilters, F141CISScreen, SeniorBot, SeniorBotConfig
+from seniorbot.keyboard import Keyboard, PywinautoKeyboardDriver
 from seniorbot.logging import configure_run_logging, shutdown_logging
+from seniorbot.remote_desktop import (
+    RemoteDesktopLauncher,
+    load_remote_desktop_config,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -102,6 +107,16 @@ def build_parser() -> argparse.ArgumentParser:
         "--dry-run",
         action="store_true",
         help="Validate inputs and show the resolved save paths without automation.",
+    )
+    f141cis.add_argument(
+        "--open-rdp",
+        action="store_true",
+        help="Open Remote Desktop, start Senior, then run F141CIS.",
+    )
+    f141cis.add_argument(
+        "--rdp-env",
+        default=None,
+        help="Local env file with RDP and Senior credentials.",
     )
     return parser
 
@@ -335,6 +350,12 @@ def run_f141cis(args: argparse.Namespace) -> Path | None:
     backup_path = backup_existing_file(local_path) if local_path is not None else None
     if backup_path is not None:
         logger.info("Arquivo existente movido para backup: %s", backup_path)
+
+    if args.open_rdp:
+        print("Preparando abertura do Senior pela Area de Trabalho Remota...")
+        rdp_keyboard = Keyboard(PywinautoKeyboardDriver(logger))
+        rdp_config = load_remote_desktop_config(args.rdp_env)
+        RemoteDesktopLauncher(rdp_keyboard, rdp_config).open_senior()
 
     print("Conectando ao controle de janelas do Windows...")
     bot = SeniorBot(

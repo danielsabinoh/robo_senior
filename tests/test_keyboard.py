@@ -32,8 +32,19 @@ class KeyboardTests(unittest.TestCase):
         keyboard.enter()
         keyboard.ctrl_a()
         keyboard.ctrl_v()
+        keyboard.win_r()
 
-        self.assertEqual(driver.events, ["+{F10}", "{VK_APPS}", "{ENTER}", "^a", "^v"])
+        self.assertEqual(
+            driver.events,
+            [
+                "+{F10}",
+                "{VK_APPS}",
+                "{ENTER}",
+                "^a",
+                "^v",
+                "{VK_LWIN down}r{VK_LWIN up}",
+            ],
+        )
 
 
 if __name__ == "__main__":

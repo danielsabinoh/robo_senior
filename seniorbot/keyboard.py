@@ -101,6 +101,11 @@ class Keyboard:
 
         self._driver.hotkey("alt", "tab")
 
+    def win_r(self) -> None:
+        """Open the Windows Run dialog."""
+
+        self._driver.send("{VK_LWIN down}r{VK_LWIN up}")
+
     def write_text(self, text: str) -> None:
         """Type literal text."""
 
