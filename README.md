@@ -99,6 +99,12 @@ SENIOR_USER=seu_usuario_do_senior
 SENIOR_PASSWORD=sua_senha_do_senior
 ```
 
+Se o IP da Area de Trabalho Remota estiver sendo digitado antes da janela carregar, aumente:
+
+```text
+MSTSC_READY_DELAY=5
+```
+
 ## Agendamento
 
 Para criar ou atualizar a tarefa diária das 17:00 no Agendador de Tarefas do Windows:

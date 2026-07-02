@@ -23,6 +23,7 @@ class RemoteDesktopConfig:
     rdp_load_delay: float = 20.0
     senior_load_delay: float = 20.0
     run_dialog_delay: float = 1.0
+    mstsc_ready_delay: float = 3.0
     connect_delay: float = 3.0
 
 
@@ -84,6 +85,7 @@ def load_remote_desktop_config(path: str | Path | None = None) -> RemoteDesktopC
         rdp_load_delay=float(values.get("RDP_LOAD_DELAY", "20")),
         senior_load_delay=float(values.get("SENIOR_LOAD_DELAY", "20")),
         run_dialog_delay=float(values.get("RUN_DIALOG_DELAY", "1")),
+        mstsc_ready_delay=float(values.get("MSTSC_READY_DELAY", "3")),
         connect_delay=float(values.get("RDP_CONNECT_DELAY", "3")),
     )
 
@@ -107,6 +109,8 @@ class RemoteDesktopLauncher:
 
         print("Abrindo Area de Trabalho Remota...")
         self._run_command("mstsc")
+        print("Aguardando a janela da Area de Trabalho Remota ficar pronta...")
+        time.sleep(self.config.mstsc_ready_delay)
         self.keyboard.write_text(self.config.rdp_host)
         self.keyboard.enter()
         time.sleep(self.config.connect_delay)

@@ -44,6 +44,7 @@ class RemoteDesktopTests(unittest.TestCase):
                         "SENIOR_PASSWORD=senior-secret",
                         "RDP_LOAD_DELAY=1",
                         "SENIOR_LOAD_DELAY=2",
+                        "MSTSC_READY_DELAY=4",
                     ]
                 ),
                 encoding="utf-8",
@@ -56,6 +57,7 @@ class RemoteDesktopTests(unittest.TestCase):
             self.assertEqual(config.senior_user, "senior-user")
             self.assertEqual(config.rdp_load_delay, 1)
             self.assertEqual(config.senior_load_delay, 2)
+            self.assertEqual(config.mstsc_ready_delay, 4)
 
     def test_launcher_runs_rdp_shortcut_and_senior_login_route(self) -> None:
         keyboard = FakeKeyboard()
@@ -69,6 +71,7 @@ class RemoteDesktopTests(unittest.TestCase):
             rdp_load_delay=0,
             senior_load_delay=0,
             run_dialog_delay=0,
+            mstsc_ready_delay=0,
             connect_delay=0,
         )
         launcher = RemoteDesktopLauncher(keyboard, config)  # type: ignore[arg-type]
