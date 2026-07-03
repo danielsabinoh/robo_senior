@@ -184,6 +184,7 @@ class RemoteDesktopLauncher:
     def _run_last_command(self) -> None:
         self.keyboard.win_r()
         time.sleep(self.config.run_dialog_delay)
+        self.keyboard.tab()
         self.keyboard.enter()
 
     def _open_mstsc(self) -> None:

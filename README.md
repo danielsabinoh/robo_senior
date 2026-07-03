@@ -162,10 +162,16 @@ SENIOR_LOGIN_READY_DELAY=5
 Para criar ou atualizar a tarefa diária das 17:00 no Agendador de Tarefas do Windows:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts\install_f141cis_task.ps1
+powershell -ExecutionPolicy Bypass -File scripts\install_f141cis_task.ps1 -ServerDestination "\\srv-banco\Compartilhado\exportacoes"
 ```
 
-A tarefa usa `launchers\seniorbot-f141cis-scheduled.cmd`, que executa sem pausa e sem confirmação manual. O Senior ainda precisa estar aberto na tela inicial para a automação atual funcionar.
+A tarefa executa `scripts\run_f141cis_daily.ps1`, que faz o fluxo completo: abre a Área de Trabalho Remota, exporta a F141CIS, copia os arquivos para o servidor e apaga da pasta local somente depois de confirmar a cópia.
+
+Para usar outro horário:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\install_f141cis_task.ps1 -ServerDestination "\\srv-banco\Compartilhado\exportacoes" -TaskTime "17:30"
+```
 
 ## Cópia para o servidor
 
@@ -184,6 +190,12 @@ powershell -ExecutionPolicy Bypass -File scripts\sync_exportacoes_to_server.ps1 
 ```
 
 O script usa cópia incremental: leva arquivos novos e atualizados para o servidor, mas não apaga arquivos do destino.
+
+Para copiar e apagar os arquivos locais confirmados no servidor:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\sync_exportacoes_to_server.ps1 -Destination "\\srv-banco\Compartilhado\exportacoes" -DeleteSourceAfterCopy
+```
 
 ## Exemplo em Python
 

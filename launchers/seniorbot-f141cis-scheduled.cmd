@@ -3,4 +3,7 @@ setlocal
 
 cd /d "%~dp0\.."
 
-python -m seniorbot f141cis --open-rdp --yes --use-today --delay 0 --serie 036 --cfops 5101 5102 6101 6102 5910 6910
+echo Use scripts\install_f141cis_task.ps1 com -ServerDestination para criar a tarefa completa.
+echo Exemplo:
+echo powershell -ExecutionPolicy Bypass -File scripts\install_f141cis_task.ps1 -ServerDestination "\\srv-banco\Compartilhado\exportacoes"
+exit /b 1

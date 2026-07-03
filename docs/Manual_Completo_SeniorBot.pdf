@@ -1,0 +1,797 @@
+%PDF-1.4
+%âãÏÓ
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Length 3347 >>
+stream
+BT /F2 20.00 Tf 1 0 0 1 54.00 788.00 Tm (Manual Completo do Projeto SeniorBot) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 746.00 Tm (Documento para operação, manutenção e transferência de conhecimento.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 723.00 Tm (Projeto: Robo-Senior / pacote seniorbot) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 700.00 Tm (Objetivo principal: automatizar a exportação diária do relatório de faturamento da tela) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 686.00 Tm (F141CIS do Senior Gestão Empresarial, salvar os arquivos em planilhas diárias, copiar os) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 672.00 Tm (arquivos para o servidor da empresa e permitir que a planilha mãe consolide os dados pelo) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 658.00 Tm (Power Query.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 611.00 Tm (1. Visão Geral Para Quem Nunca Programou) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 577.00 Tm (Este projeto é um robô de teclado. Ele não conversa diretamente com o banco de dados do) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 563.00 Tm (Senior e não usa API do Senior. Ele faz o mesmo caminho que uma pessoa faria:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 540.00 Tm (1. Abre a Área de Trabalho Remota.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 523.00 Tm (2. Entra no ambiente remoto.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 506.00 Tm (3. Abre o Senior.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 489.00 Tm (4. Faz login no Senior.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 472.00 Tm (5. Abre a tela F141CIS.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 455.00 Tm (6. Preenche filtros de data, série e CFOP.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 438.00 Tm (7. Exibe a grade.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 421.00 Tm (8. Abre o menu de exportação.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 404.00 Tm (9. Salva a planilha do dia.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 387.00 Tm (10. Fecha o Senior e a sessão remota.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 370.00 Tm (11. Copia a planilha local para o servidor.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 353.00 Tm (12. Apaga a cópia local somente depois de confirmar que o arquivo chegou ao servidor.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 330.00 Tm (O projeto existe porque a rotina manual exigia exportar todos os dias uma planilha filha,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 316.00 Tm (como:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 285.00 Tm (C:\\exportacoes\\07 2026\\01.07.xlsx) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 270.00 Tm (C:\\exportacoes\\07 2026\\02.07.xlsx) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 255.00 Tm (C:\\exportacoes\\07 2026\\03.07.xlsx) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 230.00 Tm (A planilha mãe consulta essas filhas pelo Power Query.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 207.00 Tm (No desenho final, a planilha mãe deve consultar a pasta no servidor, não a pasta local do) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 193.00 Tm (computador do operador. Assim outros usuários conseguem atualizar a planilha mãe sem) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 179.00 Tm (depender do disco local do operador.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 132.00 Tm (2. Fluxo Final Esperado) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 98.00 Tm (O fluxo diário agendado é:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 75.00 Tm (1. O Windows dispara a tarefa SeniorBot F141CIS diario às 17:00.) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 1 de 19) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Length 2571 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 788.00 Tm (2. A tarefa chama o arquivo .local\\seniorbot-f141cis-daily.cmd.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 771.00 Tm (3. Esse arquivo chama scripts\\run_f141cis_daily.ps1.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 754.00 Tm (4. O script executa:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 723.00 Tm (python -m seniorbot f141cis --open-rdp --yes --use-today --delay 0 --serie 036 --cfops 5101 5102 6) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 712.00 Tm (101 6102 5910 6910) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 687.00 Tm (5. O robô abre o RDP, abre o Senior e exporta o arquivo do dia.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 670.00 Tm (6. O arquivo é salvo primeiro em:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 639.00 Tm (C:\\exportacoes\\MM AAAA\\DD.MM.xlsx) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 614.00 Tm (Exemplo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 583.00 Tm (C:\\exportacoes\\07 2026\\03.07.xlsx) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 558.00 Tm (7. Depois o script copia a pasta local para o servidor.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 541.00 Tm (8. Depois de confirmar que o arquivo existe no servidor com o mesmo tamanho, ele apaga o) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 527.00 Tm (arquivo local.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 504.00 Tm (Importante: o script de cópia não apaga arquivos antigos do servidor. Ele acrescenta e) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 490.00 Tm (atualiza arquivos.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 443.00 Tm (3. Pastas e Caminhos Importantes) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 409.00 Tm (Pasta do projeto:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 378.00 Tm (C:\\Users\\Giuliano\\Robo-Senior) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 353.00 Tm (Pasta local de exportação:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 322.00 Tm (C:\\exportacoes) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 297.00 Tm (Pasta mensal local:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 266.00 Tm (C:\\exportacoes\\07 2026) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 241.00 Tm (Arquivo diário:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 210.00 Tm (C:\\exportacoes\\07 2026\\03.07.xlsx) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 185.00 Tm (Pasta de logs do robô:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 154.00 Tm (C:\\Users\\Giuliano\\Robo-Senior\\logs) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 129.00 Tm (Arquivo de credenciais local:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 98.00 Tm (C:\\Users\\Giuliano\\Robo-Senior\\.local\\remoteapp.env) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 73.00 Tm (Arquivo gerado para o Agendador:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 2 de 19) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 6 0 R >>
+endobj
+8 0 obj
+<< /Length 2672 >>
+stream
+BT /F3 8.50 Tf 1 0 0 1 54.00 786.00 Tm (C:\\Users\\Giuliano\\Robo-Senior\\.local\\seniorbot-f141cis-daily.cmd) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 761.00 Tm (Arquivo gerado para abrir o RDP:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 730.00 Tm (C:\\Users\\Giuliano\\Robo-Senior\\.local\\seniorbot-rdp.rdp) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 705.00 Tm (Pasta no servidor:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 674.00 Tm (\\\\srv-banco\\Servidor Antigo\\Compartilhado\\Exportacoes) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 649.00 Tm (Use o caminho real configurado na empresa. O exemplo acima foi usado durante os testes.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 602.00 Tm (4. Pré-Requisitos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 568.00 Tm (O computador que executa o robô precisa ter:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 545.00 Tm (- Windows.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 529.00 Tm (- Python instalado.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 513.00 Tm (- Acesso à rede da empresa.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 497.00 Tm (- Permissão para acessar o servidor srv-banco.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 481.00 Tm (- Permissão para abrir a Área de Trabalho Remota.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 465.00 Tm (- Permissão para entrar no Senior.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 449.00 Tm (- O projeto em C:\\Users\\Giuliano\\Robo-Senior.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 433.00 Tm (- O arquivo .local\\remoteapp.env preenchido.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 417.00 Tm (- O Power Query da planilha mãe apontando para a pasta do servidor.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 395.00 Tm (Instalação das dependências Python:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 364.00 Tm (cd C:\\Users\\Giuliano\\Robo-Senior) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 349.00 Tm (pip install -e ".[windows,dev]") Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 300.00 Tm (5. Credenciais e Arquivo .env) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 266.00 Tm (As senhas não devem ficar no GitHub. Elas ficam em:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 235.00 Tm (.local\\remoteapp.env) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 210.00 Tm (Para criar o arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 179.00 Tm (cd C:\\Users\\Giuliano\\Robo-Senior) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 164.00 Tm (New-Item -ItemType Directory -Force .local) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 149.00 Tm (Copy-Item remoteapp.env.example .local\\remoteapp.env) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 124.00 Tm (Depois edite:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 93.00 Tm (.local\\remoteapp.env) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 68.00 Tm (Campos principais:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 3 de 19) Tj ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 8 0 R >>
+endobj
+10 0 obj
+<< /Length 2942 >>
+stream
+BT /F3 8.50 Tf 1 0 0 1 54.00 780.00 Tm (RDP_HOST=10.15.1.130) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 765.00 Tm (RDP_PASSWORD=sua_senha_do_windows_remoto) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 750.00 Tm (SENIOR_SHORTCUT_PATH="C:\\Users\\Public\\Desktop\\Senior Produção\\Sapiens\\Gestão Empresarial \(ERP\).lnk) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 739.00 Tm (") Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 724.00 Tm (SENIOR_USER=seu_usuario_do_senior) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 709.00 Tm (SENIOR_PASSWORD=sua_senha_do_senior) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 694.00 Tm (SENIOR_RUN_REUSE_LAST=true) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 679.00 Tm (RDP_REDIRECT_DRIVES=true) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 654.00 Tm (O arquivo .gitignore já ignora .local e arquivos .env, então essas senhas não devem subir) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 640.00 Tm (para o GitHub.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 593.00 Tm (6. Como Testar Manualmente) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 559.00 Tm (Entre na pasta do projeto:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 528.00 Tm (cd C:\\Users\\Giuliano\\Robo-Senior) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 503.00 Tm (Teste sem acionar o Senior:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 472.00 Tm (python -m seniorbot f141cis --dry-run --use-today) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 447.00 Tm (Teste completo pelo RDP, usando o dia atual:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 416.00 Tm (python -m seniorbot f141cis --open-rdp --yes --use-today) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 391.00 Tm (Teste completo pelo RDP mantendo a sessão aberta no fim:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 360.00 Tm (python -m seniorbot f141cis --open-rdp --yes --use-today --keep-rdp-open) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 335.00 Tm (Use --keep-rdp-open quando estiver diagnosticando algo visualmente.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 288.00 Tm (7. Como Instalar ou Atualizar a Tarefa Agendada) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 254.00 Tm (Abra o PowerShell na pasta do projeto:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 223.00 Tm (cd C:\\Users\\Giuliano\\Robo-Senior) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 198.00 Tm (Instale a tarefa diária às 17:00:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 167.00 Tm (powershell -ExecutionPolicy Bypass -File scripts\\install_f141cis_task.ps1 -ServerDestination "\\\\sr) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 156.00 Tm (v-banco\\Servidor Antigo\\Compartilhado\\Exportacoes" -LocalExportPath C:\\exportacoes) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 131.00 Tm (Para mudar o horário:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 100.00 Tm (powershell -ExecutionPolicy Bypass -File scripts\\install_f141cis_task.ps1 -ServerDestination "\\\\sr) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 89.00 Tm (v-banco\\Servidor Antigo\\Compartilhado\\Exportacoes" -LocalExportPath C:\\exportacoes -TaskTime "17:3) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 78.00 Tm (0") Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 4 de 19) Tj ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 10 0 R >>
+endobj
+12 0 obj
+<< /Length 2111 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 788.00 Tm (O nome da tarefa criada é:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 757.00 Tm (SeniorBot F141CIS diario) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 732.00 Tm (Para consultar pelo terminal:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 701.00 Tm (schtasks /Query /TN "SeniorBot F141CIS diario") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 676.00 Tm (Para consultar com detalhes:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 645.00 Tm (schtasks /Query /TN "SeniorBot F141CIS diario" /V /FO LIST) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 620.00 Tm (Para remover a tarefa:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 589.00 Tm (schtasks /Delete /TN "SeniorBot F141CIS diario" /F) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 564.00 Tm (Para desativar sem apagar:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 533.00 Tm (schtasks /Change /TN "SeniorBot F141CIS diario" /Disable) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 508.00 Tm (Para ativar novamente:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 477.00 Tm (schtasks /Change /TN "SeniorBot F141CIS diario" /Enable) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 428.00 Tm (8. Onde Ver a Tarefa no Windows) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 394.00 Tm (1. Aperte Win + R.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 377.00 Tm (2. Digite:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 346.00 Tm (taskschd.msc) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 321.00 Tm (3. Pressione ENTER.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 304.00 Tm (4. Clique em Biblioteca do Agendador de Tarefas.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 287.00 Tm (5. Procure por:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 256.00 Tm (SeniorBot F141CIS diario) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 231.00 Tm (Ela fica na pasta raiz:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 200.00 Tm (\\) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 175.00 Tm (Não procure dentro das pastas da Microsoft.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 128.00 Tm (9. Cópia Para o Servidor) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 94.00 Tm (Script responsável:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 63.00 Tm (scripts\\sync_exportacoes_to_server.ps1) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 5 de 19) Tj ET
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 12 0 R >>
+endobj
+14 0 obj
+<< /Length 3107 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 782.00 Tm (Uso simples:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 751.00 Tm (powershell -ExecutionPolicy Bypass -File scripts\\sync_exportacoes_to_server.ps1 -Destination "\\\\sr) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 740.00 Tm (v-banco\\Servidor Antigo\\Compartilhado\\Exportacoes") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 715.00 Tm (Uso apagando o local depois de confirmar a cópia:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 684.00 Tm (powershell -ExecutionPolicy Bypass -File scripts\\sync_exportacoes_to_server.ps1 -Destination "\\\\sr) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 673.00 Tm (v-banco\\Servidor Antigo\\Compartilhado\\Exportacoes" -DeleteSourceAfterCopy) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 648.00 Tm (Com origem personalizada:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 617.00 Tm (powershell -ExecutionPolicy Bypass -File scripts\\sync_exportacoes_to_server.ps1 -Source "C:\\export) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 606.00 Tm (acoes" -Destination "\\\\srv-banco\\Servidor Antigo\\Compartilhado\\Exportacoes" -DeleteSourceAfterCopy) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 581.00 Tm (Comportamento:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 558.00 Tm (- Cria pastas no servidor quando necessário.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 542.00 Tm (- Copia arquivos novos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 526.00 Tm (- Atualiza arquivos que mudaram.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 510.00 Tm (- Não apaga arquivos antigos do servidor.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 494.00 Tm (- Se -DeleteSourceAfterCopy estiver ativo, apaga o arquivo local somente se o arquivo) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 480.00 Tm (existir no destino e tiver o mesmo tamanho.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 458.00 Tm (Exemplo:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 435.00 Tm (Local:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 404.00 Tm (C:\\exportacoes\\07 2026\\03.07.xlsx) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 379.00 Tm (Servidor antes:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 348.00 Tm (\\\\srv-banco\\...\\Exportacoes\\07 2026\\01.07.xlsx) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 333.00 Tm (\\\\srv-banco\\...\\Exportacoes\\07 2026\\02.07.xlsx) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 308.00 Tm (Servidor depois:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 277.00 Tm (\\\\srv-banco\\...\\Exportacoes\\07 2026\\01.07.xlsx) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 262.00 Tm (\\\\srv-banco\\...\\Exportacoes\\07 2026\\02.07.xlsx) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 247.00 Tm (\\\\srv-banco\\...\\Exportacoes\\07 2026\\03.07.xlsx) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 198.00 Tm (10. Power Query e Planilha Mãe) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 164.00 Tm (Para evitar que outro usuário dependa do disco local do operador, a planilha mãe deve) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 150.00 Tm (consultar a pasta no servidor.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 127.00 Tm (Recomendado:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 96.00 Tm (\\\\srv-banco\\Servidor Antigo\\Compartilhado\\Exportacoes) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 71.00 Tm (Não recomendado:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 6 de 19) Tj ET
+endstream
+endobj
+15 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 14 0 R >>
+endobj
+16 0 obj
+<< /Length 2730 >>
+stream
+BT /F3 8.50 Tf 1 0 0 1 54.00 786.00 Tm (C:\\exportacoes) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 761.00 Tm (Motivo: se a planilha mãe consultar C:\\exportacoes, outro usuário não conseguirá atualizar) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 747.00 Tm (os dados porque esse caminho aponta para o computador local dele, não para o computador do) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 733.00 Tm (operador original.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 686.00 Tm (11. Fluxo de Teclado da F141CIS) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 652.00 Tm (O roteiro principal está em:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 621.00 Tm (seniorbot\\screens.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 596.00 Tm (Fluxo resumido:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 573.00 Tm (1. Confirma caixa inicial do Senior, quando estiver no modo RDP:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 556.00 Tm (- espera --senior-startup-delay;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 540.00 Tm (- envia 4 TABs;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 524.00 Tm (- envia ENTER.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 508.00 Tm (2. Espera 1,5 segundo.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 491.00 Tm (3. Envia F11.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 474.00 Tm (4. Digita F141CIS.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 457.00 Tm (5. ENTER.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 440.00 Tm (6. Preenche data inicial.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 423.00 Tm (7. TAB.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 406.00 Tm (8. Preenche data final.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 389.00 Tm (9. 8 TABs.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 372.00 Tm (10. Digita série 036.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 355.00 Tm (11. 11 TABs.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 338.00 Tm (12. ENTER.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 321.00 Tm (13. 4 TABs.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 304.00 Tm (14. Digita os CFOPs:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 273.00 Tm ("5101","5102","6101","6102","5910","6910") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 248.00 Tm (15. 2 TABs.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 231.00 Tm (16. 2 setas para cima.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 214.00 Tm (17. 45 TABs.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 197.00 Tm (18. ENTER.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 180.00 Tm (19. ENTER.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 163.00 Tm (20. 8 TABs para focar a grade.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 146.00 Tm (21. Abre menu de exportação com Shift+F10.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 129.00 Tm (22. Seleciona exportação com DOWN e ENTER.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 106.00 Tm (Se a tela do Senior mudar, é nesse roteiro que provavelmente será necessário mexer.) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 7 de 19) Tj ET
+endstream
+endobj
+17 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 16 0 R >>
+endobj
+18 0 obj
+<< /Length 2444 >>
+stream
+BT /F2 16.00 Tf 1 0 0 1 54.00 776.00 Tm (12. Arquitetura do Projeto) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 742.00 Tm (O projeto é dividido em camadas:) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 711.00 Tm (Entrada de comando) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 683.00 Tm (Arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 652.00 Tm (seniorbot\\cli.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 627.00 Tm (Responsável por:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 604.00 Tm (- Ler parâmetros do terminal.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 588.00 Tm (- Decidir datas.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 572.00 Tm (- Decidir caminho de saída.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 556.00 Tm (- Abrir RDP quando --open-rdp é usado.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 540.00 Tm (- Montar configuração do robô.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 524.00 Tm (- Executar a F141CIS.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 508.00 Tm (- Fechar RDP no fim.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 492.00 Tm (- Configurar logs.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 462.00 Tm (RDP e abertura do Senior) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 434.00 Tm (Arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 403.00 Tm (seniorbot\\remote_desktop.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 378.00 Tm (Responsável por:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 355.00 Tm (- Ler .local\\remoteapp.env.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 339.00 Tm (- Gerar .local\\seniorbot-rdp.rdp.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 323.00 Tm (- Abrir mstsc.exe.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 307.00 Tm (- Confirmar certificado.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 291.00 Tm (- Enviar senha do RDP quando a tela aparece.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 275.00 Tm (- Abrir Senior dentro da sessão remota.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 259.00 Tm (- Enviar usuário e senha do Senior.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 229.00 Tm (Roteiro da tela F141CIS) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 201.00 Tm (Arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 170.00 Tm (seniorbot\\screens.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 145.00 Tm (Responsável por:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 122.00 Tm (- Abrir F141CIS.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 106.00 Tm (- Preencher datas.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 90.00 Tm (- Preencher série.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 74.00 Tm (- Preencher CFOPs.) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 8 de 19) Tj ET
+endstream
+endobj
+19 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 18 0 R >>
+endobj
+20 0 obj
+<< /Length 2259 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 788.00 Tm (- Exibir dados.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 772.00 Tm (- Focar a grade.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 742.00 Tm (Exportação genérica) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 714.00 Tm (Arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 683.00 Tm (seniorbot\\export.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 658.00 Tm (Responsável por:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 635.00 Tm (- Focar janelas quando necessário.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 619.00 Tm (- Abrir menu de contexto.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 603.00 Tm (- Acionar exportação.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 587.00 Tm (- Chamar o salvamento.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 571.00 Tm (- Esperar arquivo aparecer.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 541.00 Tm (Diálogo de salvar) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 513.00 Tm (Arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 482.00 Tm (seniorbot\\dialogs.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 457.00 Tm (Responsável por:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 434.00 Tm (- Salvar arquivo em diálogos nativos do Windows.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 418.00 Tm (- Salvar arquivo em modo RDP/RemoteApp usando teclado e área de transferência.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 388.00 Tm (Teclado) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 360.00 Tm (Arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 329.00 Tm (seniorbot\\keyboard.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 304.00 Tm (Responsável por:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 281.00 Tm (- Enviar ENTER, TAB, F11, ALT+F4, WIN+R, CTRL+V e outros atalhos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 265.00 Tm (- Converter atalhos para formato aceito pelo pywinauto.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 235.00 Tm (Janelas) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 207.00 Tm (Arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 176.00 Tm (seniorbot\\windows.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 151.00 Tm (Responsável por:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 128.00 Tm (- Encontrar janela do RemoteApp.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 112.00 Tm (- Focar janela.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 96.00 Tm (- Procurar diálogo Salvar como.) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 9 de 19) Tj ET
+endstream
+endobj
+21 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 20 0 R >>
+endobj
+22 0 obj
+<< /Length 2017 >>
+stream
+BT /F2 13.00 Tf 1 0 0 1 54.00 780.00 Tm (Configurações internas) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 752.00 Tm (Arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 721.00 Tm (seniorbot\\config.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 696.00 Tm (Responsável por:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 673.00 Tm (- Timeouts.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 657.00 Tm (- Padrões de nome de janela.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 641.00 Tm (- Métodos de menu.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 625.00 Tm (- Configurações de exportação.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 595.00 Tm (Logs) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 567.00 Tm (Arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 536.00 Tm (seniorbot\\logging.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 511.00 Tm (Responsável por:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 488.00 Tm (- Criar arquivos de log na pasta logs.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 472.00 Tm (- Resetar logging entre execuções.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 442.00 Tm (Utilitários) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 414.00 Tm (Arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 383.00 Tm (seniorbot\\utils.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 358.00 Tm (Responsável por:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 335.00 Tm (- Esperar condição acontecer.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 319.00 Tm (- Esperar arquivo existir e parar de crescer.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 273.00 Tm (13. Biblioteca de Arquivos do Projeto) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 231.00 Tm (README.md) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 203.00 Tm (Documentação curta do projeto. Boa para referência rápida.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 172.00 Tm (docs\\MANUAL_COMPLETO.md) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 144.00 Tm (Fonte editável deste manual.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 113.00 Tm (docs\\Manual_Completo_SeniorBot.pdf) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 85.00 Tm (Versão PDF deste manual.) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 10 de 19) Tj ET
+endstream
+endobj
+23 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 22 0 R >>
+endobj
+24 0 obj
+<< /Length 2395 >>
+stream
+BT /F2 13.00 Tf 1 0 0 1 54.00 780.00 Tm (pyproject.toml) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 752.00 Tm (Define o pacote Python, dependências e comando seniorbot.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 721.00 Tm (remoteapp.env.example) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 693.00 Tm (Modelo do arquivo de credenciais. Deve ser copiado para .local\\remoteapp.env.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 662.00 Tm (.gitignore) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 634.00 Tm (Define o que não vai para o GitHub. Importante para evitar subir senhas e arquivos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 620.00 Tm (temporários.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 589.00 Tm (seniorbot\\cli.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 561.00 Tm (Arquivo central do comando. Onde mexer para adicionar opções de terminal, alterar padrão de) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 547.00 Tm (data, pasta, fechamento de RDP e comportamento geral.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 516.00 Tm (seniorbot\\remote_desktop.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 488.00 Tm (Onde mexer se a abertura do RDP, login ou abertura do Senior mudar.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 457.00 Tm (seniorbot\\screens.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 429.00 Tm (Onde mexer se o caminho da F141CIS mudar, se a quantidade de TABs mudar ou se novos filtros) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 415.00 Tm (forem adicionados.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 384.00 Tm (seniorbot\\export.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 356.00 Tm (Onde mexer se o menu de exportação mudar.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 325.00 Tm (seniorbot\\dialogs.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 297.00 Tm (Onde mexer se a janela de salvar mudar.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 266.00 Tm (seniorbot\\keyboard.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 238.00 Tm (Onde mexer se precisar adicionar uma nova tecla ou atalho.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 207.00 Tm (seniorbot\\windows.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 179.00 Tm (Onde mexer se o robô não encontrar a janela do Senior/RemoteApp.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 148.00 Tm (seniorbot\\config.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 120.00 Tm (Onde mexer em timeouts e padrões internos.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 89.00 Tm (scripts\\install_f141cis_task.ps1) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 11 de 19) Tj ET
+endstream
+endobj
+25 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 24 0 R >>
+endobj
+26 0 obj
+<< /Length 2633 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 788.00 Tm (Instala ou atualiza a tarefa agendada.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 757.00 Tm (scripts\\run_f141cis_daily.ps1) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 729.00 Tm (Executa o fluxo diário completo: exporta e sincroniza com o servidor.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 698.00 Tm (scripts\\sync_exportacoes_to_server.ps1) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 670.00 Tm (Copia arquivos locais para o servidor e, opcionalmente, apaga a origem após confirmar.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 639.00 Tm (launchers\\seniorbot-f141cis-scheduled.cmd) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 611.00 Tm (Launcher antigo. Hoje orienta usar o instalador da tarefa completa.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 580.00 Tm (tests\\*.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 552.00 Tm (Testes automatizados. Eles não abrem o Senior real. Servem para garantir que a lógica e as) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 538.00 Tm (sequências esperadas continuam coerentes.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 491.00 Tm (14. Onde Mexer Para Alterações Comuns) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 449.00 Tm (Mudar horário da tarefa) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 421.00 Tm (Use:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 390.00 Tm (powershell -ExecutionPolicy Bypass -File scripts\\install_f141cis_task.ps1 -ServerDestination "\\\\sr) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 379.00 Tm (v-banco\\Servidor Antigo\\Compartilhado\\Exportacoes" -TaskTime "18:00") Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 346.00 Tm (Mudar pasta local de exportação) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 318.00 Tm (No agendamento:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 287.00 Tm (powershell -ExecutionPolicy Bypass -File scripts\\install_f141cis_task.ps1 -ServerDestination "\\\\sr) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 276.00 Tm (v-banco\\Servidor Antigo\\Compartilhado\\Exportacoes" -LocalExportPath "C:\\NovaPasta") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 251.00 Tm (No comando manual:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 220.00 Tm (python -m seniorbot f141cis --open-rdp --yes --use-today --base-dir "C:\\NovaPasta") Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 187.00 Tm (Mudar pasta do servidor) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 159.00 Tm (Reinstale a tarefa com novo destino:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 128.00 Tm (powershell -ExecutionPolicy Bypass -File scripts\\install_f141cis_task.ps1 -ServerDestination "\\\\sr) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 117.00 Tm (v-banco\\NovaPasta\\Exportacoes") Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 84.00 Tm (Mudar CFOPs) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 12 de 19) Tj ET
+endstream
+endobj
+27 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 26 0 R >>
+endobj
+28 0 obj
+<< /Length 1763 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 788.00 Tm (Arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 757.00 Tm (scripts\\run_f141cis_daily.ps1) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 732.00 Tm (Procure:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 701.00 Tm (--cfops 5101 5102 6101 6102 5910 6910) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 676.00 Tm (Altere a lista.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 653.00 Tm (Também existe padrão no código:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 622.00 Tm (seniorbot\\screens.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 597.00 Tm (Classe:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 566.00 Tm (F141CISFilters) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 533.00 Tm (Mudar série) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 505.00 Tm (No script diário:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 474.00 Tm (--serie 036) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 441.00 Tm (Mudar espera antes da caixa inicial do Senior) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 413.00 Tm (No comando:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 382.00 Tm (--senior-startup-delay 15) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 357.00 Tm (No padrão do código:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 326.00 Tm (seniorbot\\cli.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 301.00 Tm (Procure:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 270.00 Tm (--senior-startup-delay) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 237.00 Tm (Manter RDP aberto para teste) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 209.00 Tm (Use:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 178.00 Tm (--keep-rdp-open) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 145.00 Tm (Salvar no C: remoto em vez de \\\\tsclient) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 117.00 Tm (Use:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 86.00 Tm (--rdp-save-remote) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 13 de 19) Tj ET
+endstream
+endobj
+29 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 28 0 R >>
+endobj
+30 0 obj
+<< /Length 2174 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 788.00 Tm (Não é o fluxo recomendado para produção porque a planilha mãe precisa acessar a pasta no) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 774.00 Tm (servidor.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 727.00 Tm (15. Diagnóstico Por Sintoma) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 685.00 Tm (A tarefa não aparece no Agendador) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 657.00 Tm (Consultar pelo terminal:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 626.00 Tm (schtasks /Query /TN "SeniorBot F141CIS diario") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 601.00 Tm (Se aparecer no terminal, ela existe. No Agendador visual, procure na raiz da Biblioteca do) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 587.00 Tm (Agendador de Tarefas.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 556.00 Tm (O RDP não abre) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 528.00 Tm (Verifique:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 505.00 Tm (- .local\\remoteapp.env) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 489.00 Tm (- RDP_HOST) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 473.00 Tm (- permissão de Área de Trabalho Remota) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 457.00 Tm (- se mstsc.exe abre manualmente) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 427.00 Tm (A senha do RDP é digitada cedo demais) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 399.00 Tm (No .local\\remoteapp.env, aumente:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 368.00 Tm (RDP_PASSWORD_READY_DELAY=4) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 353.00 Tm (RDP_PASSWORD_PROMPT_TIMEOUT=8) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 320.00 Tm (O aviso de certificado não confirma) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 292.00 Tm (Aumente:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 261.00 Tm (RDP_CERTIFICATE_READY_DELAY=4) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 228.00 Tm (O Senior não abre depois de Win+R) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 200.00 Tm (O fluxo atual usa:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 169.00 Tm (Win+R -> TAB -> ENTER) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 144.00 Tm (Arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 113.00 Tm (seniorbot\\remote_desktop.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 88.00 Tm (Método:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 14 de 19) Tj ET
+endstream
+endobj
+31 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 30 0 R >>
+endobj
+32 0 obj
+<< /Length 2129 >>
+stream
+BT /F3 8.50 Tf 1 0 0 1 54.00 786.00 Tm (_run_last_command) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 761.00 Tm (Se precisar digitar o caminho do atalho de novo, altere no .env:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 730.00 Tm (SENIOR_RUN_REUSE_LAST=false) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 697.00 Tm (O login do Senior começa cedo demais) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 669.00 Tm (Aumente:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 638.00 Tm (SENIOR_LOGIN_READY_DELAY=5) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 623.00 Tm (SENIOR_LOAD_DELAY=30) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 590.00 Tm (O F11 não abre a busca) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 562.00 Tm (Possíveis causas:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 539.00 Tm (- Senior ainda não carregou.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 523.00 Tm (- Caixa inicial não foi confirmada.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 507.00 Tm (- Foco não voltou para a janela certa.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 485.00 Tm (Aumente:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 454.00 Tm (--senior-startup-delay 15) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 429.00 Tm (Ou ajuste:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 398.00 Tm (seniorbot\\screens.py) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 365.00 Tm (A F141CIS abriu, mas filtros ficaram errados) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 337.00 Tm (Provável mudança na tela ou quantidade de TABs.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 314.00 Tm (Arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 283.00 Tm (seniorbot\\screens.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 258.00 Tm (Método:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 227.00 Tm (fill_filters) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 194.00 Tm (Não abre menu de exportação) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 166.00 Tm (Arquivo:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 135.00 Tm (seniorbot\\export.py) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 110.00 Tm (Configuração atual:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 79.00 Tm (context_menu_method="shift_f10") Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 64.00 Tm (export_confirm_keys=\("{DOWN}", "{ENTER}"\)) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 15 de 19) Tj ET
+endstream
+endobj
+33 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 32 0 R >>
+endobj
+34 0 obj
+<< /Length 2446 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 782.00 Tm (Se o menu mudar, talvez seja necessário mudar a sequência DOWN + ENTER.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 751.00 Tm (Erro com \\\\tsclient) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 723.00 Tm (O RDP precisa ser aberto com redirecionamento de disco.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 700.00 Tm (No .local\\remoteapp.env:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 669.00 Tm (RDP_REDIRECT_DRIVES=true) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 644.00 Tm (O arquivo .local\\seniorbot-rdp.rdp é gerado automaticamente com:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 613.00 Tm (redirectdrives:i:1) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 598.00 Tm (drivestoredirect:s:*) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 565.00 Tm (Arquivo não copia para o servidor) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 537.00 Tm (Teste manual:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 506.00 Tm (powershell -ExecutionPolicy Bypass -File scripts\\sync_exportacoes_to_server.ps1 -Destination "\\\\sr) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 495.00 Tm (v-banco\\Servidor Antigo\\Compartilhado\\Exportacoes") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 470.00 Tm (Verifique:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 447.00 Tm (- acesso à rede;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 431.00 Tm (- permissão de escrita;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 415.00 Tm (- caminho correto;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 399.00 Tm (- logs em logs\\sync-exportacoes-*.log.) Tj ET
+BT /F2 13.00 Tf 1 0 0 1 54.00 369.00 Tm (Arquivo local não apaga) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 341.00 Tm (O arquivo local só é apagado quando o arquivo no servidor existe e tem o mesmo tamanho.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 318.00 Tm (Se não apagou, o script provavelmente preservou por segurança.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 271.00 Tm (16. Logs) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 237.00 Tm (Logs ficam em:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 206.00 Tm (C:\\Users\\Giuliano\\Robo-Senior\\logs) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 181.00 Tm (Tipos comuns:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 150.00 Tm (seniorbot-AAAAMMDD-HHMMSS.log) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 135.00 Tm (sync-exportacoes-AAAAMMDD-HHMMSS.log) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 110.00 Tm (Quando der erro, sempre veja o log mais recente.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 87.00 Tm (Comando para listar logs mais recentes:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 16 de 19) Tj ET
+endstream
+endobj
+35 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 34 0 R >>
+endobj
+36 0 obj
+<< /Length 2296 >>
+stream
+BT /F3 8.50 Tf 1 0 0 1 54.00 786.00 Tm (Get-ChildItem logs | Sort-Object LastWriteTime -Descending | Select-Object -First 10) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 737.00 Tm (17. Testes Automatizados) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 703.00 Tm (Rodar todos os testes:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 672.00 Tm (cd C:\\Users\\Giuliano\\Robo-Senior) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 657.00 Tm (python -m unittest) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 632.00 Tm (Os testes atuais validam:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 609.00 Tm (- comandos de teclado esperados;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 593.00 Tm (- fluxo de tela F141CIS;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 577.00 Tm (- fluxo RDP;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 561.00 Tm (- caminhos \\\\tsclient;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 545.00 Tm (- cópia e logs;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 529.00 Tm (- comportamento do CLI.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 507.00 Tm (Os testes não garantem que o Senior real não mudou. Eles garantem que o código continua) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 493.00 Tm (fazendo o que foi desenhado.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 446.00 Tm (18. Como Gerar Executáveis) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 412.00 Tm (Existe script:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 381.00 Tm (scripts\\build_exe.ps1) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 356.00 Tm (Uso:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 325.00 Tm (powershell -ExecutionPolicy Bypass -File scripts\\build_exe.ps1) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 300.00 Tm (Também existem specs:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 269.00 Tm (seniorbot.spec) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 254.00 Tm (seniorbot-f141cis.spec) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 229.00 Tm (Eles são usados pelo PyInstaller para empacotar o robô.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 206.00 Tm (Se estiver usando a instalação atual por Python, os executáveis não são obrigatórios.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 159.00 Tm (19. Segurança e Cuidados) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 125.00 Tm (Nunca suba para o GitHub:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 94.00 Tm (.local\\remoteapp.env) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 79.00 Tm (*.env) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 17 de 19) Tj ET
+endstream
+endobj
+37 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 36 0 R >>
+endobj
+38 0 obj
+<< /Length 2499 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 788.00 Tm (Não coloque senha no README.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 765.00 Tm (Não use /MIR com robocopy nesse processo sem revisar muito bem. O /MIR espelha pastas e pode) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 751.00 Tm (apagar arquivos no destino.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 728.00 Tm (O script atual foi desenhado para não apagar nada do servidor.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 705.00 Tm (Ao alterar sequências de teclado, teste com:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 674.00 Tm (python -m seniorbot f141cis --open-rdp --yes --use-today --keep-rdp-open) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 649.00 Tm (Assim a sessão fica aberta para conferir visualmente.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 602.00 Tm (20. Rotina Recomendada Para Manutenção) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 568.00 Tm (Antes de alterar:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 545.00 Tm (1. Copie a mensagem de erro ou tire print.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 528.00 Tm (2. Veja o log mais recente.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 511.00 Tm (3. Rode o comando manual com --keep-rdp-open.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 494.00 Tm (4. Identifique em qual etapa parou.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 471.00 Tm (Depois de alterar:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 448.00 Tm (1. Rode:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 417.00 Tm (python -m unittest) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 392.00 Tm (2. Teste manualmente.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 375.00 Tm (3. Se funcionar, deixe uma descrição de commit.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 358.00 Tm (4. Só então confie no agendamento.) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 311.00 Tm (21. Comandos de Referência) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 277.00 Tm (Entrar no projeto:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 246.00 Tm (cd C:\\Users\\Giuliano\\Robo-Senior) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 221.00 Tm (Teste seco:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 190.00 Tm (python -m seniorbot f141cis --dry-run --use-today) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 165.00 Tm (Exportação manual completa:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 134.00 Tm (python -m seniorbot f141cis --open-rdp --yes --use-today) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 109.00 Tm (Exportação mantendo RDP aberto:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 78.00 Tm (python -m seniorbot f141cis --open-rdp --yes --use-today --keep-rdp-open) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 18 de 19) Tj ET
+endstream
+endobj
+39 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 38 0 R >>
+endobj
+40 0 obj
+<< /Length 3060 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 788.00 Tm (Instalar agendamento:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 757.00 Tm (powershell -ExecutionPolicy Bypass -File scripts\\install_f141cis_task.ps1 -ServerDestination "\\\\sr) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 746.00 Tm (v-banco\\Servidor Antigo\\Compartilhado\\Exportacoes" -LocalExportPath C:\\exportacoes) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 721.00 Tm (Consultar agendamento:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 690.00 Tm (schtasks /Query /TN "SeniorBot F141CIS diario") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 665.00 Tm (Remover agendamento:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 634.00 Tm (schtasks /Delete /TN "SeniorBot F141CIS diario" /F) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 609.00 Tm (Sincronizar manualmente:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 578.00 Tm (powershell -ExecutionPolicy Bypass -File scripts\\sync_exportacoes_to_server.ps1 -Destination "\\\\sr) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 567.00 Tm (v-banco\\Servidor Antigo\\Compartilhado\\Exportacoes") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 542.00 Tm (Sincronizar e apagar origem:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 511.00 Tm (powershell -ExecutionPolicy Bypass -File scripts\\sync_exportacoes_to_server.ps1 -Destination "\\\\sr) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 500.00 Tm (v-banco\\Servidor Antigo\\Compartilhado\\Exportacoes" -DeleteSourceAfterCopy) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 475.00 Tm (Rodar testes:) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 444.00 Tm (python -m unittest) Tj ET
+BT /F2 16.00 Tf 1 0 0 1 54.00 395.00 Tm (22. Resumo Executivo) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 361.00 Tm (O SeniorBot é uma automação de teclado para exportar diariamente o faturamento da F141CIS.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 338.00 Tm (O agendamento diário chama um script que:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 315.00 Tm (1. abre o RDP;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 298.00 Tm (2. abre o Senior;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 281.00 Tm (3. exporta a F141CIS do dia;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 264.00 Tm (4. salva em C:\\exportacoes;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 247.00 Tm (5. copia para o servidor;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 230.00 Tm (6. apaga o arquivo local confirmado;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 213.00 Tm (7. deixa a planilha mãe consumir os dados no servidor.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 190.00 Tm (Para operação comum, o responsável precisa saber:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 167.00 Tm (- consultar a tarefa SeniorBot F141CIS diario;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 151.00 Tm (- olhar logs em logs;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 135.00 Tm (- editar .local\\remoteapp.env quando senha ou tempo mudar;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 119.00 Tm (- reinstalar o agendamento se mudar caminho do servidor ou horário;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 103.00 Tm (- rodar python -m unittest após mudanças no projeto.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 69.00 Tm (Fim do manual.) Tj ET
+BT /F3 8.50 Tf 1 0 0 1 54.00 24.00 Tm (Manual SeniorBot - pagina 19 de 19) Tj ET
+endstream
+endobj
+41 0 obj
+<< /Type /Page /Parent 42 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 40 0 R >>
+endobj
+42 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R 21 0 R 23 0 R 25 0 R 27 0 R 29 0 R 31 0 R 33 0 R 35 0 R 37 0 R 39 0 R 41 0 R] /Count 19 >>
+endobj
+43 0 obj
+<< /Type /Catalog /Pages 42 0 R >>
+endobj
+44 0 obj
+<< /Title (Manual Completo SeniorBot) /Author (SeniorBot) /Subject (Documentacao operacional e tecnica) >>
+endobj
+xref
+0 45
+0000000000 65535 f 
+0000000015 00000 n 
+0000000112 00000 n 
+0000000214 00000 n 
+0000000309 00000 n 
+0000003707 00000 n 
+0000003854 00000 n 
+0000006476 00000 n 
+0000006623 00000 n 
+0000009346 00000 n 
+0000009493 00000 n 
+0000012487 00000 n 
+0000012636 00000 n 
+0000014799 00000 n 
+0000014948 00000 n 
+0000018107 00000 n 
+0000018256 00000 n 
+0000021038 00000 n 
+0000021187 00000 n 
+0000023683 00000 n 
+0000023832 00000 n 
+0000026143 00000 n 
+0000026292 00000 n 
+0000028361 00000 n 
+0000028510 00000 n 
+0000030957 00000 n 
+0000031106 00000 n 
+0000033791 00000 n 
+0000033940 00000 n 
+0000035755 00000 n 
+0000035904 00000 n 
+0000038130 00000 n 
+0000038279 00000 n 
+0000040460 00000 n 
+0000040609 00000 n 
+0000043107 00000 n 
+0000043256 00000 n 
+0000045604 00000 n 
+0000045753 00000 n 
+0000048304 00000 n 
+0000048453 00000 n 
+0000051565 00000 n 
+0000051714 00000 n 
+0000051897 00000 n 
+0000051948 00000 n 
+trailer
+<< /Size 45 /Root 43 0 R /Info 44 0 R >>
+startxref
+52071
+%%EOF
