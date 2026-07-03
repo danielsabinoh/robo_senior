@@ -32,7 +32,9 @@ class KeyboardTests(unittest.TestCase):
         keyboard.enter()
         keyboard.ctrl_a()
         keyboard.ctrl_v()
+        keyboard.alt_f4()
         keyboard.win_r()
+        keyboard.f11()
 
         self.assertEqual(
             driver.events,
@@ -42,7 +44,9 @@ class KeyboardTests(unittest.TestCase):
                 "{ENTER}",
                 "^a",
                 "^v",
+                "%{F4}",
                 "{VK_LWIN down}r{VK_LWIN up}",
+                "{VK_F11 down}{VK_F11 up}",
             ],
         )
 

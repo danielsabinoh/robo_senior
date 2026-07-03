@@ -25,6 +25,9 @@ class FakeKeyboard:
     def enter(self) -> None:
         self.events.append("{ENTER}")
 
+    def f11(self) -> None:
+        self.events.append("{F11}")
+
 
 class FakeBot:
     def __init__(self) -> None:
@@ -92,6 +95,22 @@ class F141CISScreenTests(unittest.TestCase):
         self.assertIn('"5101","5102","6101","6102","5910","6910"', bot.keyboard.events)
         self.assertEqual(bot.keyboard.events.count("{UP}"), 2)
         self.assertGreaterEqual(bot.keyboard.events.count("{TAB}"), 77)
+
+    def test_open_from_home_can_skip_focus_and_confirm_startup_dialog(self) -> None:
+        bot = FakeBot()
+        screen = F141CISScreen(
+            bot,  # type: ignore[arg-type]
+            focus_before_open=False,
+            startup_dialog_tabs=4,
+        )
+
+        screen.open_from_home()
+
+        self.assertFalse(bot.focused)
+        self.assertEqual(
+            bot.keyboard.events[:8],
+            ["{TAB}", "{TAB}", "{TAB}", "{TAB}", "{ENTER}", "{F11}", "F141CIS", "{ENTER}"],
+        )
 
 
 if __name__ == "__main__":

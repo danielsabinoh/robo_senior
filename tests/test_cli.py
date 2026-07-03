@@ -9,6 +9,7 @@ from seniorbot.cli import (
     ask_f141cis_filter_dates,
     backup_existing_file,
     build_parser,
+    close_rdp_session,
     default_f141cis_base_dir,
     f141cis_output_path,
     format_file_size,
@@ -22,12 +23,32 @@ from seniorbot.cli import (
 )
 
 
+class FakeKeyboard:
+    def __init__(self) -> None:
+        self.events: list[str] = []
+
+    def enter(self) -> None:
+        self.events.append("{ENTER}")
+
+    def alt_f4(self) -> None:
+        self.events.append("alt_f4")
+
+
 class CliTests(unittest.TestCase):
     def test_output_paths_maps_local_drive_to_tsclient(self) -> None:
         remote_path, local_path = output_paths(r"C:\Temp\f141cis.xlsx")
 
         self.assertEqual(remote_path, Path(r"\\tsclient\C\Temp\f141cis.xlsx"))
         self.assertEqual(local_path, Path(r"C:\Temp\f141cis.xlsx"))
+
+    def test_output_paths_can_keep_local_drive_for_full_rdp(self) -> None:
+        remote_path, local_path = output_paths(
+            r"C:\Temp\f141cis.xlsx",
+            use_tsclient=False,
+        )
+
+        self.assertEqual(remote_path, Path(r"C:\Temp\f141cis.xlsx"))
+        self.assertIsNone(local_path)
 
     def test_output_paths_keeps_unc_path_as_remote_only(self) -> None:
         remote_path, local_path = output_paths(r"\\server\share\f141cis.xlsx")
@@ -109,6 +130,25 @@ class CliTests(unittest.TestCase):
             target.write_bytes(b"x" * 2048)
 
             self.assertEqual(format_file_size(target), "2.0 KB")
+
+    def test_close_rdp_session_sends_expected_shutdown_sequence(self) -> None:
+        keyboard = FakeKeyboard()
+
+        with (
+            patch("seniorbot.cli.time.sleep"),
+            patch("seniorbot.cli.subprocess.run") as run_mock,
+        ):
+            close_rdp_session(keyboard)  # type: ignore[arg-type]
+
+        self.assertEqual(
+            keyboard.events,
+            ["{ENTER}", "alt_f4", "{ENTER}", "alt_f4", "{ENTER}"],
+        )
+        run_mock.assert_called_once()
+        self.assertEqual(
+            run_mock.call_args.args[0],
+            ["taskkill", "/IM", "mstsc.exe", "/T", "/F"],
+        )
 
     def test_f141cis_parser_accepts_requested_command(self) -> None:
         parser = build_parser()

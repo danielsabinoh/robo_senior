@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import time
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
@@ -44,23 +45,47 @@ class F141CISScreen:
         bot: SeniorBot,
         *,
         filters: F141CISFilters | None = None,
+        focus_before_open: bool = True,
+        startup_dialog_delay: float = 0.0,
+        startup_dialog_tabs: int = 0,
         logger: logging.Logger | None = None,
     ) -> None:
         self.bot = bot
         self.filters = filters or F141CISFilters()
+        self.focus_before_open = focus_before_open
+        self.startup_dialog_delay = startup_dialog_delay
+        self.startup_dialog_tabs = startup_dialog_tabs
         self.logger = logger or logging.getLogger("seniorbot")
 
     def open_from_home(self) -> None:
         """Open F141CIS from Senior's initial screen using F11."""
 
-        print("Focando janela do Senior...")
-        self.bot.focus_remoteapp()
+        if self.focus_before_open:
+            print("Focando janela do Senior...")
+            self.bot.focus_remoteapp()
+        self.confirm_startup_dialog()
+        time.sleep(1.5)
         print("Abrindo busca de tela com F11...")
-        self.bot.keyboard.send_keys("{F11}")
+        self.bot.keyboard.f11()
         print("Digitando codigo F141CIS...")
         self.bot.keyboard.write_text("F141CIS")
         self.bot.keyboard.enter()
         self.logger.info("Tela F141CIS solicitada")
+
+    def confirm_startup_dialog(self) -> None:
+        """Confirm the optional Senior startup dialog before opening F141CIS."""
+
+        if self.startup_dialog_delay > 0:
+            print(f"Aguardando caixa inicial do Senior por {self.startup_dialog_delay:g} segundos...")
+            time.sleep(self.startup_dialog_delay)
+        if self.startup_dialog_tabs <= 0:
+            return
+
+        print("Confirmando caixa inicial do Senior...")
+        for _ in range(self.startup_dialog_tabs):
+            self.bot.keyboard.tab()
+            time.sleep(0.2)
+        self.bot.keyboard.enter()
 
     def fill_filters(self) -> None:
         """Fill the known F141CIS filters using the mapped keyboard route."""

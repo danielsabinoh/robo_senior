@@ -101,10 +101,20 @@ class Keyboard:
 
         self._driver.hotkey("alt", "tab")
 
+    def alt_f4(self) -> None:
+        """Close the active window."""
+
+        self._driver.hotkey("alt", "f4")
+
     def win_r(self) -> None:
         """Open the Windows Run dialog."""
 
         self._driver.send("{VK_LWIN down}r{VK_LWIN up}")
+
+    def f11(self) -> None:
+        """Press F11."""
+
+        self._driver.send("{VK_F11 down}{VK_F11 up}")
 
     def write_text(self, text: str) -> None:
         """Type literal text."""

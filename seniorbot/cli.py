@@ -6,6 +6,7 @@ import argparse
 import logging
 import re
 import shutil
+import subprocess
 import sys
 import time
 from datetime import date, datetime
@@ -114,18 +115,34 @@ def build_parser() -> argparse.ArgumentParser:
         help="Open Remote Desktop, start Senior, then run F141CIS.",
     )
     f141cis.add_argument(
+        "--rdp-save-remote",
+        action="store_true",
+        help="When using --open-rdp, save on the remote desktop C: drive instead of \\\\tsclient.",
+    )
+    f141cis.add_argument(
+        "--keep-rdp-open",
+        action="store_true",
+        help="Keep the Remote Desktop session open after a successful export.",
+    )
+    f141cis.add_argument(
         "--rdp-env",
         default=None,
         help="Local env file with RDP and Senior credentials.",
     )
+    f141cis.add_argument(
+        "--senior-startup-delay",
+        type=float,
+        default=10.0,
+        help="Seconds to wait before confirming Senior's startup dialog.",
+    )
     return parser
 
 
-def output_paths(output: str) -> tuple[Path, Path | None]:
+def output_paths(output: str, *, use_tsclient: bool = True) -> tuple[Path, Path | None]:
     """Return the RemoteApp save path and optional local wait path."""
 
     drive_match = re.match(r"^([A-Za-z]):\\(.+)$", output)
-    if drive_match:
+    if drive_match and use_tsclient:
         drive = drive_match.group(1).upper()
         rest = drive_match.group(2)
         return Path(rf"\\tsclient\{drive}\{rest}"), Path(output)
@@ -242,6 +259,29 @@ def print_export_summary(path: Path, *, backup_path: Path | None) -> None:
         print(f"Backup anterior: {backup_path}")
 
 
+def close_rdp_session(keyboard: Keyboard, *, step_delay: float = 1.0) -> None:
+    """Confirm the final save message and close Senior/RDP after a successful run."""
+
+    print("Confirmando arquivo salvo e fechando a sessao remota...")
+    time.sleep(5.0)
+    keyboard.enter()
+    time.sleep(step_delay)
+    subprocess.run(
+        ["taskkill", "/IM", "mstsc.exe", "/T", "/F"],
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    keyboard.alt_f4()
+    time.sleep(step_delay)
+    keyboard.enter()
+    time.sleep(3.0)
+    keyboard.alt_f4()
+    time.sleep(step_delay)
+    keyboard.enter()
+    time.sleep(step_delay)
+
+
 def validate_f141cis_args(args: argparse.Namespace) -> F141CISFilters:
     """Validate and normalize F141CIS business filters from CLI arguments."""
 
@@ -309,7 +349,8 @@ def run_f141cis(args: argparse.Namespace) -> Path | None:
     ask_f141cis_filter_dates(args)
     filters = validate_f141cis_args(args)
     output = resolve_f141cis_output(args)
-    remote_path, local_path = output_paths(str(output))
+    use_tsclient = not (args.open_rdp and args.rdp_save_remote)
+    remote_path, local_path = output_paths(str(output), use_tsclient=use_tsclient)
     logger.info(
         "Iniciando F141CIS: data_inicial=%s data_final=%s serie=%s cfops=%s output=%s remote_path=%s",
         filters.data_inicial,
@@ -331,7 +372,7 @@ def run_f141cis(args: argparse.Namespace) -> Path | None:
         if local_path is not None:
             print(f"Arquivo local aguardado: {local_path}")
         else:
-            print("Arquivo local aguardado: nao aplicavel")
+            print("Arquivo local aguardado: nao aplicavel; arquivo salvo no ambiente remoto")
         logger.info("Simulacao F141CIS concluida")
         return local_path or remote_path
 
@@ -351,6 +392,7 @@ def run_f141cis(args: argparse.Namespace) -> Path | None:
     if backup_path is not None:
         logger.info("Arquivo existente movido para backup: %s", backup_path)
 
+    rdp_keyboard: Keyboard | None = None
     if args.open_rdp:
         print("Preparando abertura do Senior pela Area de Trabalho Remota...")
         rdp_keyboard = Keyboard(PywinautoKeyboardDriver(logger))
@@ -360,7 +402,8 @@ def run_f141cis(args: argparse.Namespace) -> Path | None:
     print("Conectando ao controle de janelas do Windows...")
     bot = SeniorBot(
         SeniorBotConfig(
-            context_menu_method="apps",
+            focus_before_export=not args.open_rdp,
+            context_menu_method="shift_f10",
             grid_focus_keys=(),
             export_confirm_keys=("{DOWN}", "{ENTER}"),
             save_dialog_mode="remote_keyboard",
@@ -368,20 +411,29 @@ def run_f141cis(args: argparse.Namespace) -> Path | None:
             remote_save_focus_keys=("%n",),
             create_parent_dirs=False,
             file_timeout=120,
-        )
+        ),
+        keyboard=rdp_keyboard,
     )
-    print("Procurando e focando a janela do Senior...")
+    if args.open_rdp:
+        print("Usando a sessao remota ja aberta; sem procurar janela do Senior.")
+    else:
+        print("Procurando e focando a janela do Senior...")
     screen = F141CISScreen(
         bot,
         filters=filters,
+        focus_before_open=not args.open_rdp,
+        startup_dialog_delay=args.senior_startup_delay if args.open_rdp else 0,
+        startup_dialog_tabs=4 if args.open_rdp else 0,
     )
 
     print("Executando roteiro F141CIS e exportando a grade...")
     result = screen.export_xlsx(
         remote_path,
         wait_path=local_path,
-        wait=not args.no_wait,
+        wait=not args.no_wait and local_path is not None,
     )
+    if args.open_rdp and rdp_keyboard is not None and not args.keep_rdp_open:
+        close_rdp_session(rdp_keyboard)
     logger.info("F141CIS concluida com sucesso: %s", local_path or remote_path)
     summary_path = local_path or result or remote_path
     print(f"OK: arquivo exportado em {summary_path}")

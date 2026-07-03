@@ -106,6 +106,27 @@ class SeniorBotExportTests(unittest.TestCase):
             self.assertEqual(bot.export_xlsx(target), target)
             self.assertEqual(keyboard.events, ["shift_f10", "{HOME}", "{ENTER}"])
 
+    def test_export_xlsx_can_skip_focus_before_export(self) -> None:
+        with TemporaryDirectory() as directory:
+            keyboard = FakeKeyboard()
+            windows = FakeWindowManager()
+            save_dialog = FakeSaveDialog()
+            bot = SeniorBot(
+                SeniorBotConfig(
+                    focus_before_export=False,
+                    poll_interval=0.01,
+                    file_stable_seconds=0.01,
+                ),
+                keyboard=keyboard,  # type: ignore[arg-type]
+                window_manager=windows,  # type: ignore[arg-type]
+                save_dialog=save_dialog,  # type: ignore[arg-type]
+            )
+            target = Path(directory) / "export.xlsx"
+
+            self.assertEqual(bot.export_xlsx(target), target)
+            self.assertFalse(windows.focused)
+            self.assertEqual(keyboard.events, ["shift_f10", "{ENTER}"])
+
     def test_export_xlsx_can_wait_for_a_different_local_path(self) -> None:
         with TemporaryDirectory() as directory:
             keyboard = FakeKeyboard()

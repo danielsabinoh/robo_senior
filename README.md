@@ -68,6 +68,8 @@ seniorbot f141cis --yes --base-dir "C:\Controle de Faturamento"
 
 Quando o caminho de saída usa uma unidade local, o SeniorBot salva pelo caminho RemoteApp equivalente `\\tsclient\...` e aguarda o arquivo local ficar pronto.
 
+No modo `--open-rdp`, o SeniorBot abre a Área de Trabalho Remota com redirecionamento de disco habilitado. Assim o caminho `\\tsclient\C\...` aponta para o `C:` do seu computador local, e a planilha mãe consegue consultar o arquivo normalmente. Se precisar salvar somente dentro do computador remoto, use `--rdp-save-remote`.
+
 Se o arquivo do dia já existir, ele é movido antes para `_backups` dentro da pasta do mês. Exemplo:
 
 ```text
@@ -94,15 +96,65 @@ Variaveis esperadas:
 ```text
 RDP_HOST=10.15.1.130
 RDP_PASSWORD=sua_senha_do_windows_remoto
-SENIOR_SHORTCUT_PATH=\\SRVAPP01\SapiensProducao\Sapiens\Gestão Empresarial (ERP).lnk
+SENIOR_SHORTCUT_PATH="C:\Users\Public\Desktop\Senior Produção\Sapiens\Gestão Empresarial (ERP).lnk"
 SENIOR_USER=seu_usuario_do_senior
 SENIOR_PASSWORD=sua_senha_do_senior
+```
+
+Mantenha o `SENIOR_SHORTCUT_PATH` com aspas quando houver espaços ou acentos.
+
+Por padrão, o robô digita os textos pelo teclado. Se precisar testar colagem pela área de transferência, habilite:
+
+```text
+RDP_USE_CLIPBOARD=true
+```
+
+Para abrir o Senior dentro da sessão remota, o padrão é reutilizar o último comando do Executar. Ou seja: o robô aperta `Win+R` e depois ENTER, sem digitar o caminho do atalho:
+
+```text
+SENIOR_RUN_REUSE_LAST=true
+```
+
+Antes de usar esse modo, abra manualmente o Executar dentro da Área de Trabalho Remota, digite o caminho do atalho do Senior uma vez e pressione ENTER.
+
+Quando `--open-rdp` é usado, o SeniorBot assume que o Senior já está aberto dentro da sessão remota. Ele não procura uma janela local do Senior; depois do login, aguarda a caixa inicial, envia 4 TABs, ENTER, e só então abre a F141CIS com F11.
+
+Depois de exportar com sucesso no modo `--open-rdp`, o SeniorBot confirma a mensagem de arquivo salvo e fecha a sessão remota com `ALT+F4`, ENTER, `ALT+F4`, ENTER. Se a janela RDP local ainda ficar aberta, ele encerra o `mstsc.exe` como reforço. Para manter a sessão aberta durante testes, use `--keep-rdp-open`.
+
+Se precisar ajustar a espera antes dessa caixa inicial:
+
+```text
+seniorbot f141cis --open-rdp --yes --senior-startup-delay 5
 ```
 
 Se o IP da Area de Trabalho Remota estiver sendo digitado antes da janela carregar, aumente:
 
 ```text
 MSTSC_READY_DELAY=5
+```
+
+Se a senha da Area de Trabalho Remota estiver sendo digitada antes da tela de senha aparecer, aumente:
+
+```text
+RDP_PASSWORD_READY_DELAY=4
+```
+
+Como a tela de senha pode aparecer antes ou depois do aviso de certificado, o robô tenta detectar essa janela nos dois momentos. Para aumentar o tempo dessa detecção:
+
+```text
+RDP_PASSWORD_PROMPT_TIMEOUT=8
+```
+
+Se o aviso de certificado aparecer depois da senha e o robô confirmar cedo demais, aumente:
+
+```text
+RDP_CERTIFICATE_READY_DELAY=4
+```
+
+Se o usuário/senha do Senior estiver sendo digitado antes da tela de login carregar, aumente:
+
+```text
+SENIOR_LOGIN_READY_DELAY=5
 ```
 
 ## Agendamento
@@ -114,6 +166,24 @@ powershell -ExecutionPolicy Bypass -File scripts\install_f141cis_task.ps1
 ```
 
 A tarefa usa `launchers\seniorbot-f141cis-scheduled.cmd`, que executa sem pausa e sem confirmação manual. O Senior ainda precisa estar aberto na tela inicial para a automação atual funcionar.
+
+## Cópia para o servidor
+
+Se a planilha mãe ficar no servidor, copie a pasta local de exportações para uma pasta compartilhada no servidor e aponte o Power Query para essa pasta compartilhada.
+
+Exemplo:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\sync_exportacoes_to_server.ps1 -Destination "\\srv-banco\Compartilhado\exportacoes"
+```
+
+Por padrão, a origem é `C:\exportacoes`. Para usar outra origem:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\sync_exportacoes_to_server.ps1 -Source "C:\exportacoes" -Destination "\\srv-banco\Compartilhado\exportacoes"
+```
+
+O script usa cópia incremental: leva arquivos novos e atualizados para o servidor, mas não apaga arquivos do destino.
 
 ## Exemplo em Python
 

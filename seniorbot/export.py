@@ -83,7 +83,8 @@ class SeniorBot:
         """Trigger the first context-menu item, optionally saving the XLSX."""
 
         try:
-            self.focus_remoteapp()
+            if self.config.focus_before_export:
+                self.focus_remoteapp()
             self.focus_grid()
             self.open_context_menu()
             self.logger.info("Exportando XLSX")

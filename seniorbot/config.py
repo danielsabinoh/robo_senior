@@ -38,6 +38,7 @@ class SeniorBotConfig:
     file_stable_seconds: float = 0.5
     create_parent_dirs: bool = True
     confirm_overwrite: bool = True
+    focus_before_export: bool = True
     context_menu_method: ContextMenuMethod = "shift_f10"
     grid_focus_keys: tuple[str, ...] = ()
     export_confirm_keys: tuple[str, ...] = ("{ENTER}",)
